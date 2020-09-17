@@ -45,10 +45,16 @@ class Connection:
     lastSequenceNumber = -1
     sendSequenceNumber = 0
     messageIndex = 0
-    channelIndex = {}
+    channelIndex = []
     needACK = []
     splitID = 0
-    lastUpdate = int(timeNow())
+    lastUpdate = None
     isActive = False
     
-    
+    def __init__(self, listener, mtuSize, address):
+        self.listener = listener
+        self.mtuSize = mtuSize
+        self.address = address
+        self.lastUpdate = int(timeNow())
+        for i in range(0, 32):
+            self.channelIndex.insert(i, 0)
