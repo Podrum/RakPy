@@ -58,3 +58,14 @@ class Connection:
         self.lastUpdate = int(timeNow())
         for i in range(0, 32):
             self.channelIndex.insert(i, 0)
+            
+    def update(self, timestamp):
+        if not self.isActive and (self.lastUpdate + 10000) < timestamp:
+            self.disconnect("timeout")
+            return
+        self.isActive = False
+        if len(self.ackQueue) > 0:
+            pk = Ack()
+            pk.packets = self.ackQueue
+            self.sendPacket(pk)
+            self.ackQueue = []
