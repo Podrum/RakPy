@@ -119,3 +119,14 @@ class Connection:
             return self.handleNack(buffer)
         else:
             return self.handleDatagram(buffer)
+        
+    def handleDatagram(self, buffer):
+        dataPacket = DataPacket()
+        dataPacket.buffer = buffer
+        dataPacket.encode()
+        if dataPacket.sequenceNumber < self.windowStart:
+            return
+        elif dataPacket.sequenceNumber > self.windowEnd:
+            return
+        elif self.receivedWindow.includes(dataPacket.sequenceNumber):
+            return
