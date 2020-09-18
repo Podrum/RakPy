@@ -69,3 +69,8 @@ class Connection:
             pk.packets = self.ackQueue
             self.sendPacket(pk)
             self.ackQueue = []
+        if len(self.nackQueue) > 0:
+            pk = Nack()
+            pk.packets = self.nackQueue
+            self.sendPacket(pk)
+            self.nackQueue = []
