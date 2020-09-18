@@ -101,3 +101,4 @@ class Connection:
                 del self.receivedWindow[seq]
             else:
                 break
+        self.sendQueue()
