@@ -74,3 +74,9 @@ class Connection:
             pk.packets = self.nackQueue
             self.sendPacket(pk)
             self.nackQueue = []
+        if len(self.packetToSend) > 0
+            limit = 16
+            for pk in self.packetToSend:
+                pk.sendTime = timestamp
+                pk.encode()
+                self.recoveryQueue[pk.sequenceNumber] = pk
