@@ -85,3 +85,14 @@ class Connection:
                 limit -= 1
                 if limit <= 0:
                     break
+            if len(self.packetToSend) > 2048:
+                self.packetToSend = []
+        if len(self.needAck) > 0:
+            for identifierACK, indexes in enumerate(self.needACK):
+                if len(indexes) == 0:
+                    del self.needACK[identifierACK]
+                    # Todo add Notify ACK
+        for seq, pk in self.recoveryQueue.items():
+            if pk.sendTime < (timeNow() - 8):
+                self.packetToSend.append(pk)
+                del self.recoveryQueue[seq]
