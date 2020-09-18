@@ -105,3 +105,16 @@ class Connection:
         
     def disconnect(self, reason = "unknown"):
         self.listener.removeConnection(self, reason)
+        
+    def receive(self, buffer):
+        self.isActive = True
+        self.lastUpdate = timeNow()
+        header = buffer[0]
+        if (header & BitFlags.Valid) == 0:
+            return
+        elif header & BitFlags.Ack:
+            return self.handleAck(buffer)
+        elif header & BitFlags.Nack:
+            return self.handleNack(buffer)
+        else:
+            return self.handleDatagram(buffer)
