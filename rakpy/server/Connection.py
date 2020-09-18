@@ -128,5 +128,5 @@ class Connection:
             return
         elif dataPacket.sequenceNumber > self.windowEnd:
             return
-        elif self.receivedWindow.includes(dataPacket.sequenceNumber):
+        elif self.receivedWindow.has_key(dataPacket.sequenceNumber):
             return
