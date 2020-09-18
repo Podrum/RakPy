@@ -1,3 +1,4 @@
+from binutilspy.Binary import Binary
 from binutilspy.BinaryStream import BinaryStream
 from rakpy.protocol.Ack import Ack
 from rakpy.protocol.BitFlags import BitFlags
