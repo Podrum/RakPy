@@ -102,3 +102,6 @@ class Connection:
             else:
                 break
         self.sendQueue()
+        
+    def disconnect(self, reason = "unknown"):
+        self.listener.removeConnection(self, reason)
