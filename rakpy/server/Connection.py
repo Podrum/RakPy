@@ -76,7 +76,11 @@ class Connection:
             self.nackQueue = []
         if len(self.packetToSend) > 0
             limit = 16
-            for pk in self.packetToSend:
+            for key, pk in enumerate(self.packetToSend):
                 pk.sendTime = timestamp
                 pk.encode()
                 self.recoveryQueue[pk.sequenceNumber] = pk
+                del self.packetToSend[key]
+                limit -= 1
+                if limit <= 0:
+                    break
