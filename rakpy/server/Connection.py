@@ -148,7 +148,7 @@ class Connection:
         for packet in dataPacket.packets:
             self.receivePacket(packet)
             
-    def handleACK(self, buffer):
+    def handleAck(self, buffer):
         packet = Ack()
         packet.buffer = buffer
         packet.decode()
@@ -156,10 +156,10 @@ class Connection:
             if seq in self.recoveryQueue:
                 for pk in self.recoveryQueue[seq].packets:
                     if isinstance(pk, EncapsulatedPacket) and pk.needACK and pk.messageIndex != None:
-                        del self.needACK[pk.identifierACK]
+                        del self.needAck[pk.identifierAck]
                 del recoveryQueue[seq]
                 
-    def handleNACK(self, buffer):
+    def handleNack(self, buffer):
         packet = Nack()
         packet.buffer = buffer
         packet.decode()
