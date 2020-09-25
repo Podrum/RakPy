@@ -214,7 +214,7 @@ class Connection:
         if packet.getTotalLength() + 4 > self.mtuSize:
             buffers = []
             for i in range(0, len(packet.buffer), self.mtuSize - 34):
-                buffers.append([packet.buffer[i:i - (self.mtuSize - 34)]])
+                buffers.append(packet.buffer[i:i - (self.mtuSize - 34)])
             self.splitId += 1
             splitID = self.splitID % 65536
             for count, buffer in enumerate(buffers):
