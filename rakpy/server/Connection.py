@@ -130,3 +130,8 @@ class Connection:
             return
         elif dataPacket.sequenceNumber < len(self.receivedWindow):
             return
+        diff = dataPacket.sequenceNumber - self.lastSequenceNumber
+        if dataPacket.sequenceNumber < len(self.nackQueue):
+            del self.nackQueue[dataPacket.sequenceNumber]
+        
+        
