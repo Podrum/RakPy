@@ -211,4 +211,11 @@ class Connection:
             if packet.reliability == 3:
                 packet.orderIndex = self.channelIndex[packet.orderChannel]
                 self.channelIndex[packet.orderChannel] += 1
-            
+        if packet.getTotalLength() + 4 > self.mtuSize:
+            buffers = []
+            for i in range(0, len(packet.buffer), self.mtuSize - 34):
+                buffers.append([packet.buffer[i:i - (self.mtuSize - 34)]])
+            self.splitID += 1
+            splitID = self.splitID % 65536
+            for count, buffer in enumerate(buffers):
+                pass
