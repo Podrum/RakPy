@@ -149,7 +149,7 @@ class Connection:
             self.receivePacket(packet)
             
     def handleACK(self, buffer):
-        packet = ACK()
+        packet = Ack()
         packet.buffer = buffer
         packet.decode()
         for seq in packet.packets:
@@ -158,3 +158,15 @@ class Connection:
                     if isinstance(pk, EncapsulatedPacket) and pk.needACK and pk.messageIndex != None:
                         del self.needACK[pk.identifierACK]
                 del recoveryQueue[seq]
+                
+    def handleNACK(self, buffer):
+        packet = Nack()
+        packet.buffer = buffer
+        packet.decode()
+        for seq in packet.packets:
+            if seq in self.recoveryQueue:
+                pk = self.recoveryQueue[seq]
+                pk.sequenceNumber = self.sequenceNumber
+                self.sequenceNumber += 1
+                self.packetToSend.append(pk)
+                del self.recoveryQueue[seq]
