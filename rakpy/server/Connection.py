@@ -204,4 +204,11 @@ class Connection:
                 
     def addEncapsulatedToQueue(self, packet, flags = self.priority["Normal"]):
         if (packet.needAck = (flags & 0b00001000) > 0) == True:
-            pass
+            self.needAck.insert(packet.identifierACK, [])
+        if packet.reliability >= 2 and packet.reliability <= 7:
+            packet.messageIndex = self.messageIndex
+            self.messageIndex += 1
+            if packet.reliability == 3:
+                packet.orderIndex = self.channelIndex[packet.orderChannel]
+                self.channelIndex[packet.orderChannel] += 1
+            
