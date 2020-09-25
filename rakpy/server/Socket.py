@@ -8,19 +8,18 @@ class Socket:
         try:
             self.socket.bind((address.getAddress(), address.getPort()))
         except socket.error as e:
-            print("Cannot use this port! Is a server already on it?")
+            print(f"Unable to binto to {str(address.getPort())}")
             print(str(e))
         else:
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            #self.socket.setblocking(False)
        
-    def getPacket(self):
+    def sendBuffer(self):
         data = self.socket.recvfrom(65535)
         print(f"IN -> {data}")
         return data
           
-    def putPacket(self, buffer, address):
+    def receiveBuffer(self, buffer, address):
         data = self.socket.sendto(buffer, address)
         print(f"OUT -> {data}")
         return data
