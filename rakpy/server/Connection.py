@@ -215,7 +215,24 @@ class Connection:
             buffers = []
             for i in range(0, len(packet.buffer), self.mtuSize - 34):
                 buffers.append([packet.buffer[i:i - (self.mtuSize - 34)]])
-            self.splitID += 1
+            self.splitId += 1
             splitID = self.splitID % 65536
             for count, buffer in enumerate(buffers):
-                pass
+                pk = EncapsulatedPacket()
+                pk.splitId = splitId
+                pk.split = True
+                pk.splitCount = len(buffers)
+                pk.reliability = packet.reliability
+                pk.splitIndex = count
+                pk.buffer = buffer
+                if count > 0:
+                    pk.messageIndex = self.messageIndex
+                    self.messageIndex += 1
+                else:
+                    pk.messageIndex = packet.messageIndex
+                if pk.reliability == 3:
+                    pk.orderChannel = packet.orderChannel
+                    pk.orderIndex = packet.orderIndex
+                self.addToQueue(pk, flags | self.priority["Immediate"])
+        else:
+            self.addToQueue(packet, flags)
