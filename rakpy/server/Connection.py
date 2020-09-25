@@ -236,3 +236,29 @@ class Connection:
                 self.addToQueue(pk, flags | self.priority["Immediate"])
         else:
             self.addToQueue(packet, flags)
+            
+    def addToQueue(self, pk, flags = priority["Normal"]):
+        priority = flags & 0b0000111
+        if pk.needAck and pk.messageIndex != None:
+            self.needACK.insert(pk.identifierAck, pk.messageIndex)
+        if priority == self.priority["Immediate"]:
+            packet = DataPacket()
+            packet.sequenceNumber = self.sendSequenceNumber
+            self.sendSequenceNumber += 1
+            if pk.needAck:
+                packet.packets.append(deepcopy(pk))
+                pk.needAck = False
+            else:
+                packet.packets.append(pk.toBinary())
+            self.sendPacket(packet)
+            packet.sendTime = timeNow()
+            self.recoveryQueue[packet.sequenceNumber] = packet
+            return
+        length = len(self.sendQueue)
+        if (length + pk.getTotalLength()) > self.mtuSize:
+            self.sendQueue()
+        if pk.needAck:
+            self.sendQueue.packets.append(deepcopy(pk))
+            pk.needACK = False
+        else:
+            self.sendQueue.packets.append(pk.toBinary())
