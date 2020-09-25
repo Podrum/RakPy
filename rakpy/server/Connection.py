@@ -179,3 +179,25 @@ class Connection:
                 return
             elif packet.messageIndex > self.reliableWindowEnd:
                 return
+            if (packet.messageIndex - self.lastReliableIndex) == 1:
+                self.lastReliableIndex += 1
+                self.reliableWindowStart += 1
+                self.reliableWindowEnd += 1
+                self.handlePacket(packet)
+                if self.reliableWindow.size > 0:
+                    windows = deepcopy(self.reliableWindow)
+                    reliableWindow = {}
+                    windows.sort()
+                    for k, v in windows.items():
+                        reliableWindow[k] = v
+                    self.reliableWindow = reliableWindow
+                    for seqIndex, pk in self.reliableWindow:
+                        if (seqIndex - self.lastReliableIndex) != 1:
+                            break
+                        self.lastReliableIndex += 1
+                        self.reliableWindowStart += 1
+                        self.reliableWindowEnd += 1
+                        self.handlePacket(pk)
+                        del self.reliableWindow[seqIndex]
+            else:
+                self.reliableWindow[packet.messageIndex] = packet
