@@ -2,11 +2,13 @@ import socket
 
 class ServerSocket:
     socket = None
+    address = None
     
     def __init__(self, address):
+        self.address = address
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         try:
-            self.socket.bind((address.getAddress(), address.getPort()))
+            self.socket.bind((self.address.getAddress(), self.address.getPort()))
         except socket.error as e:
             print(f"Unable to binto to {str(address.getPort())}")
             print(str(e))
