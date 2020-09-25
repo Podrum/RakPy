@@ -201,3 +201,6 @@ class Connection:
                         del self.reliableWindow[seqIndex]
             else:
                 self.reliableWindow[packet.messageIndex] = packet
+    def addEncapsulatedToQueue(self, packet, flags = self.priority["Normal"]):
+        if (packet.needAck = (flags & 0b00001000) > 0) == True:
+            pass
