@@ -273,4 +273,24 @@ class Connection:
         pk = None
         sendPacket = None
         if id < 0x80:
-            pass
+            if self.state == self.status["Connecting"]:
+                if id == PacketIdentifiers.ConnectionRequest:
+                    dataPacket = ConnectionRequest()
+                    dataPacket.buffer = packet.buffer
+                    dataPacket.decode()
+                    pk = ConnectionRequestAccepted()
+                    pk.clientAddress = self.address
+                    pk.requestTime = dataPacket.time
+                    pk.time = Binary.flipLongEndianness(timeNow()) if Binary.ENDIANESS == Binary.LITTLE_ENDIAN else timeNow()
+                    pk.encode()
+                    sendPacket = EncapsulatedPacket()
+                    sendPacket.reliability = 0
+                    sendPacket.buffer = pk.buffer
+                    self.addToQueue(sendPacket, priority["Immediate"])
+                elif id == PacketIdentifiers.NewIncomingConnection:
+                    dataPacket = NewIncomingConnection()
+                    dataPacket.buffer = packet.buffer
+                    dataPacket.decode()
+                    serverPort = self.server.socket.address.port
+                    if dataPacket.address.port == serverPort:
+                        self.state = status["Connected"]
