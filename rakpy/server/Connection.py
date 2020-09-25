@@ -123,7 +123,7 @@ class Connection:
     def handleDatagram(self, buffer):
         dataPacket = DataPacket()
         dataPacket.buffer = buffer
-        dataPacket.encode()
+        dataPacket.decode()
         if dataPacket.sequenceNumber < self.windowStart:
             return
         elif dataPacket.sequenceNumber > self.windowEnd:
@@ -151,7 +151,7 @@ class Connection:
     def handleACK(self, buffer):
         packet = ACK()
         packet.buffer = buffer
-        packet.encode()
+        packet.decode()
         for seq in packet.packets:
             if seq in self.recoveryQueue:
                 for pk in self.recoveryQueue[seq].packets:
