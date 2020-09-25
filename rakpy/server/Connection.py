@@ -136,5 +136,8 @@ class Connection:
         self.ackQueue.append(dataPacket.sequenceNumber)
         self.receivedWindow.append(dataPacket.sequenceNumber)
         if diff != 1:
-            pass
+            i = self.lastSequenceNumber + 1
+            while i < dataPacket.sequenceNumber:
+                
+                i += 1
         
