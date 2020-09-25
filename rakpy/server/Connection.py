@@ -170,3 +170,12 @@ class Connection:
                 self.sequenceNumber += 1
                 self.packetToSend.append(pk)
                 del self.recoveryQueue[seq]
+                
+    def receivePacket(self, packet):
+        if packet.messageIndex == None:
+            self.handlePacket(packet)
+        else:
+            if packet.messageIndex < self.reliableWindowStart:
+                return
+            elif packet.messageIndex > self.reliableWindowEnd:
+                return
