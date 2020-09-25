@@ -147,3 +147,14 @@ class Connection:
             self.windowEnd += diff
         for packet in dataPacket.packets:
             self.receivePacket(packet)
+            
+    def handleACK(self, buffer):
+        packet = ACK()
+        packet.buffer = buffer
+        packet.encode()
+        for seq in packet.packets:
+            if seq in self.recoveryQueue:
+                for pk in self.recoveryQueue[seq].packets:
+                    if isinstance(pk, EncapsulatedPacket) and pk.needACK and pk.messageIndex != None:
+                        del self.needACK[pk.identifierACK]
+                del recoveryQueue[seq]
