@@ -138,6 +138,12 @@ class Connection:
         if diff != 1:
             i = self.lastSequenceNumber + 1
             while i < dataPacket.sequenceNumber:
-                
+                if i not in self.receivedWindow:
+                    self.nackQueue.append(i)
                 i += 1
-        
+        if diff >= 1:
+            lastSequenceNumber = dataPacket.sequenceNumber
+            self.windowStart += diff
+            self.windowEnd += diff
+        for packet in dataPacket.packets:
+            self.receivePacket(packet)
