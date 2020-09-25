@@ -1,6 +1,6 @@
 import socket
 
-class Socket:
+class ServerSocket:
     socket = None
     
     def __init__(self, address):
