@@ -27,7 +27,7 @@ class Connection:
         "Disconnected": 3
     }
     
-    listener = None
+    server = None
     mtuSize = None
     address = None
     state = status["Connecting"]
@@ -53,8 +53,8 @@ class Connection:
     lastUpdate = None
     isActive = False
     
-    def __init__(self, listener, mtuSize, address):
-        self.listener = listener
+    def __init__(self, server, mtuSize, address):
+        self.server = server
         self.mtuSize = mtuSize
         self.address = address
         self.lastUpdate = int(timeNow())
@@ -106,7 +106,7 @@ class Connection:
         self.sendQueue()
         
     def disconnect(self, reason = "unknown"):
-        self.listener.removeConnection(self, reason)
+        self.server.removeConnection(self, reason)
         
     def receive(self, buffer):
         self.isActive = True
