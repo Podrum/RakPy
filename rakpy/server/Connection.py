@@ -263,3 +263,14 @@ class Connection:
             pk.needACK = False
         else:
             self.sendQueue.packets.append(pk.toBinary())
+
+    def handlePacket(self, packet):
+        if packet.split:
+            self.handleSplit(packet)
+            return
+        id = packet.buffer[0]
+        dataPacket = None
+        pk = None
+        sendPacket = None
+        if id < 0x80:
+            pass
