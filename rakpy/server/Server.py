@@ -109,7 +109,8 @@ class Server(Thread):
         
     def run(self):
         while True:
-            if self.socket.receiveBuffer() != None:
-                data, address = self.socket.getPacket()
+            buffer = self.socket.receiveBuffer()
+            if buffer != None:
+                data, address = buffer
                 self.handle(data, InternetAddress(address[0], address[1]))
                 self.tick()
