@@ -320,3 +320,10 @@ class Connection:
         else:
             self.splitPackets.insert(packet.splitId, [[packet.splitIndex, packet]])
         localSplits = self.splitPackets[packet.splitId]
+        if len(localSplits) == packet.splitCount:
+            pk = EncapsulatedPacket()
+            for count, packet in enumerate(localSplits):
+                BinaryStream.put(packet.buffer)
+            del self.splitPackets[packet.splitId]
+            pk.buffer = BinaryStream.buffer
+            self.receivePacket(pk)
