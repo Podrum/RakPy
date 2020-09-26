@@ -1,3 +1,4 @@
+from copy import deepcopy
 from binutilspy.Binary import Binary
 from binutilspy.BinaryStream import BinaryStream
 from rakpy.protocol.Ack import Ack
@@ -12,7 +13,6 @@ from rakpy.protocol.Nack import Nack
 from rakpy.protocol.NewIncomingConnection import NewIncomingConnection
 from rakpy.utils.InternetAddress import InternetAddress
 from time import time as timeNow
-from copy import deepcopy
 
 class Connection:
     priority = {
