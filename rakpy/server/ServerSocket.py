@@ -16,12 +16,12 @@ class ServerSocket:
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
        
-    def sendBuffer(self):
+    def receiveBuffer(self):
         data = self.socket.recvfrom(65535)
         print(f"IN -> {data}")
         return data
           
-    def receiveBuffer(self, buffer, address):
+    def sendBuffer(self, buffer, address):
         data = self.socket.sendto(buffer, address)
         print(f"OUT -> {data}")
         return data
