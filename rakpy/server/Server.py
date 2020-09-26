@@ -2,7 +2,11 @@ from binutilspy.Binary import Binary
 from rakpy.protocol.PacketIdentifiers import PacketIdentifiers
 from rakpy.protocol.UnconnectedPing import UnconnectedPing
 from rakpy.protocol.UnconnectedPong import UnconnectedPong
-
+from rakpy.protocol.OpenConnectionRequest1 import OpenConnectionRequest1
+from rakpy.protocol.OpenConnectionReply1 import OpenConnectionReply1
+from rakpy.protocol.OpenConnectionRequest2 import OpenConnectionRequest2
+from rakpy.protocol.OpenConnectionReply2 import OpenConnectionReply2
+from rakpy.protocol.IncompatibleProtocolVersion import IncompatibleProtocolVersion
 from rakpy.server.Connection import Connection
 from rakpy.server.ServerSocket import ServerSocket
 from rakpy.utils.InternetAddress import InternetAddress
