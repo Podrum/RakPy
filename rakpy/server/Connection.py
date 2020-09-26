@@ -7,7 +7,7 @@ from rakpy.protocol.ConnectedPing import ConnectedPing
 from rakpy.protocol.ConnectedPong import ConnectedPong
 from rakpy.protocol.ConnectionRequest import ConnectionRequest
 from rakpy.protocol.ConnectionRequestAccepted import ConnectionRequestAccepted
-from rakpy,protocol.DataPacket import DataPacket
+from rakpy.protocol.DataPacket import DataPacket
 from rakpy.protocol.EncapsulatedPacket import EncapsulatedPacket
 from rakpy.protocol.Nack import Nack
 from rakpy.protocol.NewIncomingConnection import NewIncomingConnection
@@ -76,7 +76,7 @@ class Connection:
             pk.packets = self.nackQueue
             self.sendPacket(pk)
             self.nackQueue = []
-        if len(self.packetToSend) > 0
+        if len(self.packetToSend) > 0:
             limit = 16
             for key, pk in enumerate(self.packetToSend):
                 pk.sendTime = timestamp
