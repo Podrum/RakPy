@@ -327,3 +327,19 @@ class Connection:
             del self.splitPackets[packet.splitId]
             pk.buffer = BinaryStream.buffer
             self.receivePacket(pk)
+    
+    def sendQueue(self):
+        if len(self.sendQueue.packets) > 0:
+            self.sendQueue.sequenceNumber = self.sendSequenceNumber
+            self.sendSequenceNumber += 1
+            self.sendPacket(self.sendQueue)
+            self.sendQueue.sendTime = timeNow()
+            self.recoveryQueue[self.sendQueue.sequenceNumber] = self.sendQueue
+            self.sendQueue = DataPacket()
+            
+    def sendPacket(self, packet):
+        packet.encode()
+        self.socket.sendBuffer(packet.buffer, (self.address.getAddress(), self.address.getPort()))
+
+    def close(self):
+        pass
