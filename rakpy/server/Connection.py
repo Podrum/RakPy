@@ -342,4 +342,4 @@ class Connection:
         self.socket.sendBuffer(packet.buffer, (self.address.getAddress(), self.address.getPort()))
 
     def close(self):
-        pass
+        self.addEncapsulatedToQueue(EncapsulatedPacket.fromBinary('\x00\x00\x08\x15'), self.priority[Immediate])
