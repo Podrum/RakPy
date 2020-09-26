@@ -295,4 +295,19 @@ class Connection:
                     if dataPacket.address.port == serverPort:
                         self.state = status["Connected"]
                         # Todo Add open connection event
-            elif
+            elif id == PacketIdentifiers.DisconnectNotification:
+                self.disconnect('client disconnect')
+            elif id == PacketIdentifiers.ConnectedPing:
+                dataPacket = ConnectedPing()
+                dataPacket.buffer = packet.buffer
+                dataPacket.decode()
+                pk = ConnectedPong()
+                pk.pingTime = dataPacket.time
+                pk.pongTime = Binary.flipLongEndianness(timeNow()) if Binary.ENDIANESS == Binary.LITTLE_ENDIAN else timeNow()
+                pk.encode()
+                sendPacket = EncapsulatedPacket()
+                sendPacket.reliability = 0
+                sendPacket.buffer = pk.buffer
+                self.addToQueue(sendPacket)
+        elif self.state == self.status["Connected"]:
+            
