@@ -3,6 +3,7 @@ from rakpy.server.ServerSocket import ServerSocket
 from rakpy.utils.InternetAddress import InternetAddress
 import os
 from threading import Thread
+from time import sleep, time as timeNow
 
 class Server(Thread):
     protocol = 10
@@ -89,6 +90,14 @@ class Server(Thread):
             self.connections[token].close()
             del self.connections[token]
         # Todo Add close connection event
+        
+    def tick(self):
+        if not self.shutdown:
+            for token, connection in self.connections.items():
+                connection.update(timeNow())
+        else:
+            return
+        sleep(self.raknetTickLength * 1000)
         
     def run(self):
         while True:
