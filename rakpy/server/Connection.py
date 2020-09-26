@@ -4,7 +4,7 @@ from binutilspy.BinaryStream import BinaryStream
 from rakpy.protocol.Ack import Ack
 from rakpy.protocol.BitFlags import BitFlags
 from rakpy.protocol.ConnectedPing import ConnectedPing
-from rakpy,protocol.ConnectedPong import ConnectedPong
+from rakpy.protocol.ConnectedPong import ConnectedPong
 from rakpy.protocol.ConnectionRequest import ConnectionRequest
 from rakpy.protocol.ConnectionRequestAccepted import ConnectionRequestAccepted
 from rakpy,protocol.DataPacket import DataPacket
