@@ -8,6 +8,7 @@ from rakpy.protocol.OpenConnectionRequest2 import OpenConnectionRequest2
 from rakpy.protocol.OpenConnectionReply2 import OpenConnectionReply2
 from rakpy.protocol.IncompatibleProtocol import IncompatibleProtocol
 from rakpy.server.Connection import Connection
+from rakpy.server.ServerInterface import ServerInterface
 from rakpy.server.ServerSocket import ServerSocket
 from rakpy.utils.InternetAddress import InternetAddress
 import os
@@ -22,12 +23,17 @@ class Server(Thread):
     id = Binary.readLong(os.urandom(8))
     name = None
     socket = None
+    interface = None
     connections = {}
-    shutdown = False   
+    shutdown = False
     
-    def __init__(self, address):
+    def __init__(self, address, interface):
         super().__init__()
         self.socket = ServerSocket(address)
+        if interface != None:
+            self.interface = interface
+        else:
+            self.interface = ServerInterface()
         self.start()
         
     def handleUnconnectedPing(self, data):
@@ -97,7 +103,7 @@ class Server(Thread):
         if token in self.connections:
             self.connections[token].close()
             del self.connections[token]
-        # Todo Add close connection event
+        self.interface.onCloseConnection(connection.address, reason)
         
     def tick(self):
         if not self.shutdown:
