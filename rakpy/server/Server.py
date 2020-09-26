@@ -21,6 +21,19 @@ class Server(Thread):
         self.listen(address)
         self.start()
         
+    def handleUnconnectedPing(data):
+        decodedPacket = UnconnectedPing()
+        decodedPacket.buffer = data
+        decodedPacket.decode()
+        if not decodedPacket.isValid:
+            raise Exception("Invalid offline message")
+        packet = UnconnectedPong()
+        packet.time = decodedPacket.time
+        packet.serverID = self.id
+        packet.serverName = self.name
+        packet.encode()
+        return packet.buffer
+        
     def handle(self, data, address):
         header = data[0]
         token = f"{address.getAddress}:{address.getPort}"
