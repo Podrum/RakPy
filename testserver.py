@@ -16,5 +16,4 @@ mcsn.gamemode = "Creative"
 mcsn.serverId = 0
 name = mcsn.toString()
 
-server.setOption("name", name)
-server.run()
+server.name = name
