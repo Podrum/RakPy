@@ -27,7 +27,7 @@ class Server(Thread):
     connections = {}
     shutdown = False
     
-    def __init__(self, address, interface):
+    def __init__(self, address, interface = None):
         super().__init__()
         self.socket = ServerSocket(address)
         if interface != None:
