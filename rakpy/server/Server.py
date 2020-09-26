@@ -1,4 +1,9 @@
 from binutilspy.Binary import Binary
+from rakpy.protocol.PacketIdentifiers import PacketIdentifiers
+from rakpy.protocol.UnconnectedPing import UnconnectedPing
+from rakpy.protocol.UnconnectedPong import UnconnectedPong
+
+from rakpy.server.Connection import Connection
 from rakpy.server.ServerSocket import ServerSocket
 from rakpy.utils.InternetAddress import InternetAddress
 import os
