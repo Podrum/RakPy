@@ -52,7 +52,7 @@ class Server(Thread):
         packet.encode()
         return packet.buffer
     
-    def handleOpenConnectionRequest2(data, address):
+    def handleOpenConnectionRequest2(self, data, address):
         decodedPacket = OpenConnectionRequest2()
         decodedPacket.buffer = data
         decodedPacket.decode()
@@ -81,6 +81,14 @@ class Server(Thread):
                 socket.sendBuffer(self.handleOpenConnectionRequest1(data), (address.getAddress(), address.getPort()))
             elif header == PacketIdentifiers.OpenConnectionRequest2:
                 socket.sendBuffer(self.handleOpenConnectionRequest2(data, address), (address.getAddress(), address.getPort()))
+       
+    def removeConnection(connection, reason):
+        address = connection.address
+        token = f"{address.getAddress}:{address.getPort}"
+        if token in self.connections:
+            self.connections[token].close()
+            del self.connections[token]
+        # Todo Add close connection event
         
     def run(self):
         while True:
