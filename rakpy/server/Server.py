@@ -82,7 +82,7 @@ class Server(Thread):
             elif header == PacketIdentifiers.OpenConnectionRequest2:
                 socket.sendBuffer(self.handleOpenConnectionRequest2(data, address), (address.getAddress(), address.getPort()))
        
-    def removeConnection(connection, reason):
+    def removeConnection(self, connection, reason):
         address = connection.address
         token = f"{address.getAddress}:{address.getPort}"
         if token in self.connections:
