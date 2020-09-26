@@ -295,7 +295,7 @@ class Connection:
                     serverPort = self.server.socket.address.port
                     if dataPacket.address.port == serverPort:
                         self.state = status["Connected"]
-                        # Todo Add open connection event
+                        self.server.interface.onOpenConnection(self)
             elif id == PacketIdentifiers.DisconnectNotification:
                 self.disconnect('client disconnect')
             elif id == PacketIdentifiers.ConnectedPing:
@@ -311,7 +311,7 @@ class Connection:
                 sendPacket.buffer = pk.buffer
                 self.addToQueue(sendPacket)
         elif self.state == self.status["Connected"]:
-            pass # Todo add Encapulated event
+            self.interface.onEncapsulated(packet, self.address)
     
     def handleSplit(self, packet):
         if packet.splitId in self.splitPackets:
