@@ -310,4 +310,13 @@ class Connection:
                 sendPacket.buffer = pk.buffer
                 self.addToQueue(sendPacket)
         elif self.state == self.status["Connected"]:
-            
+            pass # Todo add Encapulated event
+    
+    def handleSplit(self, packet):
+        if packet.splitId in self.splitPackets:
+            value = self.splitPackets[packet.splitId]
+            value.insert(packet.splitIndex, packet)
+            self.splitPackets.insert(packet.splitId, value)
+        else:
+            self.splitPackets.insert(packet.splitId, [[packet.splitIndex, packet]])
+        localSplits = self.splitPackets[packet.splitId]
