@@ -104,3 +104,4 @@ class Server(Thread):
             if self.socket.getPacket() != None:
                 data, address = self.socket.getPacket()
                 self.handle(data, InternetAddress(address[0], address[1]))
+                self.tick()
