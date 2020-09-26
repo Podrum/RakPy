@@ -29,13 +29,23 @@ class Server(Thread):
             raise Exception("Invalid offline message")
         packet = UnconnectedPong()
         packet.time = decodedPacket.time
-        packet.serverID = self.id
+        packet.serverId = self.id
         packet.serverName = self.name
         packet.encode()
         return packet.buffer
     
-    def handleOpenConnectionRequest1(self, buffer):
-        pass
+    def handleOpenConnectionRequest1(self, data):
+        decodedPacket = OpenConnectionRequest1()
+        decodedPacket.buffer = data
+        decodedPacket.decode()
+        if not decodedPacket.isValid:
+            raise Exception("Invalid offline message")
+        if decodedPacket.protocol != self.protocol:
+            packet = IncompatibleProtocolVersion()
+            packet.protocol = self.protocol
+            packet.serverId = self.id
+            packet.encode()
+            return packet.buffer
         
     def handle(self, data, address):
         header = data[0]
