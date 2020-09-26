@@ -85,11 +85,11 @@ class Server(Thread):
             connection.receive(data)
         else:
             if header == PacketIdentifiers.UnconnectedPing:
-                socket.sendBuffer(self.handleUnconnectedPing(data), (address.getAddress(), address.getPort()))
+                self.socket.sendBuffer(self.handleUnconnectedPing(data), (address.getAddress(), address.getPort()))
             elif header == PacketIdentifiers.OpenConnectionRequest1:
-                socket.sendBuffer(self.handleOpenConnectionRequest1(data), (address.getAddress(), address.getPort()))
+                self.socket.sendBuffer(self.handleOpenConnectionRequest1(data), (address.getAddress(), address.getPort()))
             elif header == PacketIdentifiers.OpenConnectionRequest2:
-                socket.sendBuffer(self.handleOpenConnectionRequest2(data, address), (address.getAddress(), address.getPort()))
+                self.socket.sendBuffer(self.handleOpenConnectionRequest2(data, address), (address.getAddress(), address.getPort()))
        
     def removeConnection(self, connection, reason):
         address = connection.address
