@@ -51,6 +51,22 @@ class Server(Thread):
         packet.mtu = decodedPacket.mtu
         packet.encode()
         return packet.buffer
+    
+    def handleOpenConnectionRequest2(data, address):
+        decodedPacket = OpenConnectionRequest2()
+        decodedPacket.buffer = data
+        decodedPacket.decode()
+        if not decodedPacket.isValid:
+            raise Exception("Invalid offline message")
+        packet = OpenConnectionReply2()
+        packet.serverId = self.id
+        packet.mtu = decodedPacket.mtu
+        packet.clientAddress = address
+        packet.encode()
+        token = f"{address.getAddress}:{address.getPort}"
+        connection = Connection(self, decodedPacket.mtu, address)
+        self.connections[token] = connection
+        return packet.buffer
         
     def handle(self, data, address):
         header = data[0]
