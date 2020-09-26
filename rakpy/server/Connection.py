@@ -294,3 +294,5 @@ class Connection:
                     serverPort = self.server.socket.address.port
                     if dataPacket.address.port == serverPort:
                         self.state = status["Connected"]
+                        # Todo Add open connection event
+            elif
