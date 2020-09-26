@@ -21,7 +21,7 @@ class Server(Thread):
         self.listen(address)
         self.start()
         
-    def handleUnconnectedPing(data):
+    def handleUnconnectedPing(self, data):
         decodedPacket = UnconnectedPing()
         decodedPacket.buffer = data
         decodedPacket.decode()
@@ -33,6 +33,9 @@ class Server(Thread):
         packet.serverName = self.name
         packet.encode()
         return packet.buffer
+    
+    def handleOpenConnectionRequest1(self, buffer):
+        pass
         
     def handle(self, data, address):
         header = data[0]
