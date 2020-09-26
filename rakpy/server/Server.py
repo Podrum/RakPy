@@ -46,6 +46,11 @@ class Server(Thread):
             packet.serverId = self.id
             packet.encode()
             return packet.buffer
+        packet = OpenConnectionReply1()
+        packet.serverId = self.id
+        packet.mtu = decodedPacket.mtu
+        packet.encode()
+        return packet.buffer
         
     def handle(self, data, address):
         header = data[0]
