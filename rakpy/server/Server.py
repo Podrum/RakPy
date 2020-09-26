@@ -6,7 +6,7 @@ from rakpy.protocol.OpenConnectionRequest1 import OpenConnectionRequest1
 from rakpy.protocol.OpenConnectionReply1 import OpenConnectionReply1
 from rakpy.protocol.OpenConnectionRequest2 import OpenConnectionRequest2
 from rakpy.protocol.OpenConnectionReply2 import OpenConnectionReply2
-from rakpy.protocol.IncompatibleProtocolVersion import IncompatibleProtocolVersion
+from rakpy.protocol.IncompatibleProtocol import IncompatibleProtocol
 from rakpy.server.Connection import Connection
 from rakpy.server.ServerSocket import ServerSocket
 from rakpy.utils.InternetAddress import InternetAddress
@@ -51,7 +51,7 @@ class Server(Thread):
         if not decodedPacket.isValid:
             raise Exception("Invalid offline message")
         if decodedPacket.protocol != self.protocol:
-            packet = IncompatibleProtocolVersion()
+            packet = IncompatibleProtocol()
             packet.protocol = self.protocol
             packet.serverId = self.id
             packet.encode()
