@@ -28,7 +28,6 @@ class Server(Thread):
     def __init__(self, address):
         super().__init__()
         self.socket = ServerSocket(address)
-        self.listen(address)
         self.start()
         
     def handleUnconnectedPing(self, data):
@@ -110,7 +109,7 @@ class Server(Thread):
         
     def run(self):
         while True:
-            if self.socket.getPacket() != None:
+            if self.socket.receiveBuffer() != None:
                 data, address = self.socket.getPacket()
                 self.handle(data, InternetAddress(address[0], address[1]))
                 self.tick()
