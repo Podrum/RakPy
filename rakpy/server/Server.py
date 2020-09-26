@@ -31,7 +31,9 @@ class Server(Thread):
             if header == PacketIdentifiers.UnconnectedPing:
                 socket.sendBuffer(self.handleUnconnectedPing(data), (address.getAddress(), address.getPort()))
             elif header == PacketIdentifiers.OpenConnectionRequest1:
-                pass
+                socket.sendBuffer(self.handleOpenConnectionRequest1(data), (address.getAddress(), address.getPort()))
+            elif header == PacketIdentifiers.OpenConnectionRequest2:
+                socket.sendBuffer(self.handleOpenConnectionRequest2(data, address), (address.getAddress(), address.getPort()))
         
     def run(self):
         while True:
