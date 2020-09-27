@@ -111,7 +111,7 @@ class Server(Thread):
                 connection.update(timeNow())
         else:
             return
-        sleep(self.raknetTickLength * 1000)
+        sleep(self.raknetTickLength)
         
     def run(self):
         while True:
