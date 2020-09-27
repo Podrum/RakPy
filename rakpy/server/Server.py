@@ -55,7 +55,7 @@ class Server(Thread):
         decodedPacket.decode()
         if not decodedPacket.isValid:
             raise Exception("Invalid offline message")
-        if decodedPacket.protocol != self.protocol:
+        if decodedPacket.protocolVersion != self.protocol:
             packet = IncompatibleProtocol()
             packet.protocol = self.protocol
             packet.serverId = self.id
