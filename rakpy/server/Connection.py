@@ -98,7 +98,8 @@ class Connection:
             if pk.sendTime < (timeNow() - 8):
                 self.packetToSend.append(pk)
                 del self.recoveryQueue[seq]
-        for seq in self.receivedWindow:
+        # Should look at that later
+        for seq, value in enumerate(self.receivedWindow):
             if seq < self.windowStart:
                 del self.receivedWindow[seq]
             else:
