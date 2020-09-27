@@ -28,13 +28,13 @@ class EncapsulatedPacket:
         offset += 2
         if length == 0:
             raise Exception("Got an empty encapsulated packet")
-        if Reliability.isReliable(packet.reliability):
+        if Reliability().isReliable(packet.reliability):
             packet.messageIndex = Binary.readLTriad(buffer[offset:offset + 3])
             offset += 3
-        if Reliability.isSequenced(packet.reliability):
+        if Reliability().isSequenced(packet.reliability):
             packet.sequenceIndex = Binary.readLTriad(buffer[offset:offset + 3])
             offset += 3
-        if Reliability.isSequencedOrOrdered(packet.reliability):
+        if Reliability().isSequencedOrOrdered(packet.reliability):
             packet.orderIndex = Binary.readLTriad(buffer[offset:offset + 3])
             offset += 3
             packet.orderChannel = Binary.readByte(buffer[offset:offset + 1])
