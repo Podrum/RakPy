@@ -57,11 +57,11 @@ class EncapsulatedPacket:
             header |= BitFlags.Split
         buffer += Binary.writeByte(header)
         buffer += Binary.writeShort(len(self.buffer) << 3)
-        if Reliability.isReliable(self.reliability):
+        if Reliability().isReliable(self.reliability):
             buffer += Binary.writeLTriad(self.messageIndex)
-        if Reliability.isSequenced(self.reliability):
+        if Reliability().isSequenced(self.reliability):
             buffer += Binary.writeLTriad(self.sequenceIndex)
-        if Reliability.isSequencedOrOrdered(self.reliability):
+        if Reliability().isSequencedOrOrdered(self.reliability):
             buffer += Binary.writeLTriad(self.orderIndex)
             buffer += Binary.writeByte(self.orderChannel)
         if self.split:
