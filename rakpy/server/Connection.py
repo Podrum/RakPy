@@ -290,7 +290,7 @@ class Connection:
                     sendPacket = EncapsulatedPacket()
                     sendPacket.reliability = 0
                     sendPacket.buffer = pk.buffer
-                    self.addToQueue(sendPacket, priority["Immediate"])
+                    self.addToQueue(sendPacket, self.priority["Immediate"])
                 elif id == PacketIdentifiers.NewIncomingConnection:
                     dataPacket = NewIncomingConnection()
                     dataPacket.buffer = packet.buffer
