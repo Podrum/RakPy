@@ -18,7 +18,11 @@ class DataPacket(Packet):
         self.sequenceNumber = self.getLTriad()
         while not self.feof():
             offset = 0
-            self.packets.append(EncapsulatedPacket().fromBinary(self.buffer[self.offset:], offset))
+            data = self.buffer[self.offset:]
+            if data == b"":
+                break
+            packet = EncapsulatedPacket().fromBinary(data, offset)
+            self.packets.append(packet)
             self.offset += offset
             
     def length(self):
