@@ -283,6 +283,7 @@ class Connection:
                     dataPacket.decode()
                     pk = ConnectionRequestAccepted()
                     pk.clientAddress = self.address
+                    pk.systemIndex = 0
                     pk.requestTime = dataPacket.time
                     pk.time = Binary.flipLongEndianness(int(timeNow())) if Binary.ENDIANNESS == Binary.LITTLE_ENDIAN else int(timeNow())
                     pk.encode()
