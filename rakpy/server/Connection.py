@@ -11,6 +11,7 @@ from rakpy.protocol.DataPacket import DataPacket
 from rakpy.protocol.EncapsulatedPacket import EncapsulatedPacket
 from rakpy.protocol.Nack import Nack
 from rakpy.protocol.NewIncomingConnection import NewIncomingConnection
+from rakpy.protocol.PacketIdentifiers import PacketIdentifiers
 from rakpy.utils.InternetAddress import InternetAddress
 from time import time as timeNow
 
@@ -283,7 +284,7 @@ class Connection:
                     pk = ConnectionRequestAccepted()
                     pk.clientAddress = self.address
                     pk.requestTime = dataPacket.time
-                    pk.time = Binary.flipLongEndianness(timeNow()) if Binary.ENDIANESS == Binary.LITTLE_ENDIAN else timeNow()
+                    pk.time = Binary.flipLongEndianness(int(timeNow())) if Binary.ENDIANNESS == Binary.LITTLE_ENDIAN else int(timeNow())
                     pk.encode()
                     sendPacket = EncapsulatedPacket()
                     sendPacket.reliability = 0
@@ -305,7 +306,7 @@ class Connection:
                 dataPacket.decode()
                 pk = ConnectedPong()
                 pk.pingTime = dataPacket.time
-                pk.pongTime = Binary.flipLongEndianness(timeNow()) if Binary.ENDIANESS == Binary.LITTLE_ENDIAN else timeNow()
+                pk.pongTime = Binary.flipLongEndianness(int(timeNow())) if Binary.ENDIANNESS == Binary.LITTLE_ENDIAN else int(timeNow())
                 pk.encode()
                 sendPacket = EncapsulatedPacket()
                 sendPacket.reliability = 0
