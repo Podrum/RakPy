@@ -21,8 +21,8 @@ class DataPacket(Packet):
             if data == b"":
                 break
             packet = EncapsulatedPacket().fromBinary(data)
-            self.packets.append(packet[0])
-            self.offset += packet[1]
+            self.packets.append(packet)
+            self.offset += len(data)
             
     def length(self):
         length = 4
