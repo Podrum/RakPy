@@ -17,13 +17,12 @@ class DataPacket(Packet):
     def decodePayload(self):
         self.sequenceNumber = self.getLTriad()
         while not self.feof():
-            offset = 0
             data = self.buffer[self.offset:]
             if data == b"":
                 break
-            packet = EncapsulatedPacket().fromBinary(data, offset)
-            self.packets.append(packet)
-            self.offset += offset
+            packet = EncapsulatedPacket().fromBinary(data)
+            self.packets.append(packet[0])
+            self.offset += packet[1]
             
     def length(self):
         length = 4
