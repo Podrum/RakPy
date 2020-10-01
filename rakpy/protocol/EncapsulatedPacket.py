@@ -16,7 +16,8 @@ class EncapsulatedPacket:
     needAck = False
     identifierAck = None
     
-    def fromBinary(self, buffer, offset = 0):
+    def fromBinary(self, buffer):
+        offset = 0
         packet = EncapsulatedPacket()
         header = buffer[offset]
         offset += 1
@@ -47,7 +48,7 @@ class EncapsulatedPacket:
             offset += 4
         packet.buffer = buffer[offset:offset + length]
         offset += length
-        return packet
+        return packet, offset
     
     def toBinary(self):
         buffer = b""
