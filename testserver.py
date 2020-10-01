@@ -20,7 +20,7 @@ class TestServer(ServerInterface):
         mcsn.protocol = 408
         mcsn.version = "1.16.20"
         mcsn.players["online"] = 0
-        mcsn.players["max"] = 0
+        mcsn.players["max"] = 500
         mcsn.gamemode = "Creative"
         mcsn.serverId = 0
         return mcsn.toString()
