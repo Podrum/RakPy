@@ -175,9 +175,7 @@ class Connection:
                 del self.recoveryQueue[seq]
                 
     def receivePacket(self, packet):
-        try:
-            packet.messageIndex
-        except:
+        if packet.messageIndex == None:
             self.handlePacket(packet)
         else:
             if packet.messageIndex < self.reliableWindowStart:
