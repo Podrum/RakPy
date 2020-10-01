@@ -1,3 +1,4 @@
+from copy import deepcopy
 from rakpy.protocol.BitFlags import BitFlags
 from rakpy.protocol.EncapsulatedPacket import EncapsulatedPacket
 from rakpy.protocol.Packet import Packet
@@ -21,7 +22,7 @@ class DataPacket(Packet):
             if data == b"":
                 break
             packet = EncapsulatedPacket().fromBinary(data)
-            self.packets.append(packet)
+            self.packets.append(deepcopy(packet))
             self.offset += len(data)
             
     def length(self):
