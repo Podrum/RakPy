@@ -187,7 +187,7 @@ class Connection:
                 self.reliableWindowStart += 1
                 self.reliableWindowEnd += 1
                 self.handlePacket(packet)
-                if self.reliableWindow.size > 0:
+                if len(self.reliableWindow) > 0:
                     windows = deepcopy(self.reliableWindow)
                     reliableWindow = {}
                     windows.sort()
