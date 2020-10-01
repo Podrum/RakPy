@@ -48,7 +48,7 @@ class EncapsulatedPacket:
             offset += 4
         packet.buffer = buffer[offset:offset + length]
         offset += length
-        return packet, offset
+        return packet
     
     def toBinary(self):
         buffer = b""
