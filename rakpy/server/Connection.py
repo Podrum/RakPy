@@ -95,7 +95,7 @@ class Connection:
                 if len(indexes) == 0:
                     del self.needACK[identifierACK]
                     # Todo add Notify ACK
-        for seq, pk in self.recoveryQueue.items():
+        for seq, pk in dict(self.recoveryQueue).items():
             if pk.sendTime < (timeNow() - 8):
                 self.packetToSend.append(pk)
                 del self.recoveryQueue[seq]
