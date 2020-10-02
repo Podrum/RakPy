@@ -333,7 +333,7 @@ class Connection:
             self.receivePacket(pk)
     
     def sendTheQueue(self):
-        if len(DataPacket.packets) > 0:
+        if len(self.sendQueue.packets) > 0:
             self.sendQueue.sequenceNumber = self.sendSequenceNumber
             self.sendSequenceNumber += 1
             self.sendPacket(self.sendQueue)
