@@ -105,7 +105,7 @@ class Connection:
                 del self.receivedWindow[seq]
             else:
                 break
-        self.sendQueue()
+        self.sendTheQueue()
         
     def disconnect(self, reason = "unknown"):
         self.server.removeConnection(self, reason)
@@ -260,7 +260,7 @@ class Connection:
             return
         length = len(self.sendQueue)
         if (length + pk.getTotalLength()) > self.mtuSize:
-            self.sendQueue()
+            self.sendTheQueue()
         if pk.needAck:
             self.sendQueue.packets.append(deepcopy(pk))
             pk.needACK = False
@@ -332,7 +332,7 @@ class Connection:
             pk.buffer = BinaryStream.buffer
             self.receivePacket(pk)
     
-    def sendQueue(self):
+    def sendTheQueue(self):
         if len(DataPacket.packets) > 0:
             self.sendQueue.sequenceNumber = self.sendSequenceNumber
             self.sendSequenceNumber += 1
