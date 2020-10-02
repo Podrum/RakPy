@@ -24,9 +24,12 @@ class ServerSocket:
         return data
           
     def sendBuffer(self, buffer, address):
-        data = self.socket.sendto(buffer, address)
-        print(f"OUT -> {data}")
-        return data
+        try:
+            data = self.socket.sendto(buffer, address)
+            print(f"OUT -> {data}")
+            return data
+        except:
+            pass
       
     def closeSocket(self):
         self.socket.close()
