@@ -190,7 +190,7 @@ class Connection:
                 if len(self.reliableWindow) > 0:
                     windows = deepcopy(self.reliableWindow)
                     reliableWindow = {}
-                    windows.sort()
+                    windows = dict(sorted(windows.items()))
                     for k, v in windows.items():
                         reliableWindow[k] = v
                     self.reliableWindow = reliableWindow
