@@ -180,7 +180,7 @@ class Connection:
         else:
             if packet.messageIndex < self.reliableWindowStart:
                 return
-            elif packet.messageIndex > self.reliableWindowEnd:
+            if packet.messageIndex > self.reliableWindowEnd:
                 return
             if (packet.messageIndex - self.lastReliableIndex) == 1:
                 self.lastReliableIndex += 1
