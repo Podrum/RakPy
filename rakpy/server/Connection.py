@@ -243,7 +243,7 @@ class Connection:
             
     def addToQueue(self, pk, flags = priority["Normal"]):
         priority = flags & 0b0000111
-        if pk.needAck and pk.messageIndex != None:
+        if pk.needAck and pk.messageIndex is not None:
             self.needACK.insert(pk.identifierAck, pk.messageIndex)
         if priority == self.priority["Immediate"]:
             packet = DataPacket()
