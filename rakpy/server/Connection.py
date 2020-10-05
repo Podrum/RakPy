@@ -129,9 +129,9 @@ class Connection:
         dataPacket.decode()
         if dataPacket.sequenceNumber < self.windowStart:
             return
-        elif dataPacket.sequenceNumber > self.windowEnd:
+        if dataPacket.sequenceNumber > self.windowEnd:
             return
-        elif dataPacket.sequenceNumber < len(self.receivedWindow):
+        if dataPacket.sequenceNumber < len(self.receivedWindow):
             return
         diff = dataPacket.sequenceNumber - self.lastSequenceNumber
         if dataPacket.sequenceNumber < len(self.nackQueue):
