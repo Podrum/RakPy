@@ -30,7 +30,7 @@ class Server(Thread):
     def __init__(self, address, interface = None):
         super().__init__()
         self.socket = ServerSocket(address)
-        if interface != None:
+        if interface is not None:
             self.interface = interface
         else:
             self.interface = ServerInterface()
