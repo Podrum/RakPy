@@ -116,9 +116,9 @@ class Connection:
         header = buffer[0]
         if (header & BitFlags.Valid) == 0:
             return
-        elif header & BitFlags.Ack:
+        if header & BitFlags.Ack:
             return self.handleAck(buffer)
-        elif header & BitFlags.Nack:
+        if header & BitFlags.Nack:
             return self.handleNack(buffer)
         else:
             return self.handleDatagram(buffer)
