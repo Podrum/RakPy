@@ -158,7 +158,7 @@ class Connection:
         for seq in packet.packets:
             if seq in self.recoveryQueue:
                 for pk in self.recoveryQueue[seq].packets:
-                    if isinstance(pk, EncapsulatedPacket) and pk.needACK and pk.messageIndex != None:
+                    if isinstance(pk, EncapsulatedPacket) and pk.needACK and pk.messageIndex is not None:
                         del self.needAck[pk.identifierAck]
                 del recoveryQueue[seq]
                 
