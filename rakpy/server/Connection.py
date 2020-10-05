@@ -37,7 +37,7 @@ class Connection:
     recoveryQueue = {}
     packetToSend = []
     sendQueue = DataPacket()
-    splitPackets = []
+    splitPackets = {}
     windowStart = -1
     windowEnd = 2048
     reliableWindowStart = 0
@@ -49,7 +49,7 @@ class Connection:
     sendSequenceNumber = 0
     messageIndex = 0
     channelIndex = []
-    needAck = []
+    needAck = {}
     splitId = 0
     lastUpdate = None
     isActive = False
@@ -208,7 +208,7 @@ class Connection:
     def addEncapsulatedToQueue(self, packet, flags = priority["Normal"]):
         packet.needAck = flags & 0b00001000
         if (packet.needAck > 0) == True:
-            self.needAck.insert(packet.identifierACK, [])
+            self.needAck[packet.identifierACK] = []
         if packet.reliability >= 2 and packet.reliability <= 7:
             packet.messageIndex = self.messageIndex
             self.messageIndex += 1
@@ -319,10 +319,10 @@ class Connection:
     def handleSplit(self, packet):
         if packet.splitId in self.splitPackets:
             value = self.splitPackets[packet.splitId]
-            value.insert(packet.splitIndex, packet)
-            self.splitPackets.insert(packet.splitId, value)
+            value[packet.splitIndex] = packet
+            self.splitPackets[packet.splitId] = value
         else:
-            self.splitPackets.insert(packet.splitId, [[packet.splitIndex, packet]])
+            self.splitPackets[packet.splitId] = {packet.splitIndex: packet}
         localSplits = self.splitPackets[packet.splitId]
         if len(localSplits) == packet.splitCount:
             pk = EncapsulatedPacket()
