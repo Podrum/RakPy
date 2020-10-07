@@ -116,9 +116,9 @@ class Connection:
         header = buffer[0]
         if (header & BitFlags.Valid) == 0:
             return
-        elif header & BitFlags.Ack:
+        if header & BitFlags.Ack:
             return self.handleAck(buffer)
-        elif header & BitFlags.Nack:
+        if header & BitFlags.Nack:
             return self.handleNack(buffer)
         else:
             return self.handleDatagram(buffer)
@@ -129,9 +129,9 @@ class Connection:
         dataPacket.decode()
         if dataPacket.sequenceNumber < self.windowStart:
             return
-        elif dataPacket.sequenceNumber > self.windowEnd:
+        if dataPacket.sequenceNumber > self.windowEnd:
             return
-        elif dataPacket.sequenceNumber < len(self.receivedWindow):
+        if dataPacket.sequenceNumber < len(self.receivedWindow):
             return
         diff = dataPacket.sequenceNumber - self.lastSequenceNumber
         if dataPacket.sequenceNumber < len(self.nackQueue):
@@ -158,7 +158,7 @@ class Connection:
         for seq in packet.packets:
             if seq in self.recoveryQueue:
                 for pk in self.recoveryQueue[seq].packets:
-                    if isinstance(pk, EncapsulatedPacket) and pk.needACK and pk.messageIndex != None:
+                    if isinstance(pk, EncapsulatedPacket) and pk.needACK and pk.messageIndex is not None:
                         del self.needAck[pk.identifierAck]
                 del recoveryQueue[seq]
                 
@@ -175,12 +175,12 @@ class Connection:
                 del self.recoveryQueue[seq]
                 
     def receivePacket(self, packet):
-        if packet.messageIndex == None:
+        if packet.messageIndex is None:
             self.handlePacket(packet)
         else:
             if packet.messageIndex < self.reliableWindowStart:
                 return
-            elif packet.messageIndex > self.reliableWindowEnd:
+            if packet.messageIndex > self.reliableWindowEnd:
                 return
             if (packet.messageIndex - self.lastReliableIndex) == 1:
                 self.lastReliableIndex += 1
@@ -243,7 +243,7 @@ class Connection:
             
     def addToQueue(self, pk, flags = priority["Normal"]):
         priority = flags & 0b0000111
-        if pk.needAck and pk.messageIndex != None:
+        if pk.needAck and pk.messageIndex is not None:
             self.needACK.insert(pk.identifierAck, pk.messageIndex)
         if priority == self.priority["Immediate"]:
             packet = DataPacket()

@@ -30,7 +30,7 @@ class Server(Thread):
     def __init__(self, address, interface = None):
         super().__init__()
         self.socket = ServerSocket(address)
-        if interface != None:
+        if interface is not None:
             self.interface = interface
         else:
             self.interface = ServerInterface()
@@ -116,7 +116,7 @@ class Server(Thread):
     def run(self):
         while True:
             buffer = self.socket.receiveBuffer()
-            if buffer != None:
+            if buffer is not None:
                 data, address = buffer
                 self.handle(data, InternetAddress(address[0], address[1]))
                 self.tick()
