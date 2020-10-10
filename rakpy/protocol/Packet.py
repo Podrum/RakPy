@@ -23,14 +23,14 @@ class Packet(BinaryStream):
                 str((~self.getByte()) & 0xff)
             ])
             port = self.getShort()
-            InternetAddress(addr, port, ver)
+            return InternetAddress(addr, port, ver)
         elif ver == 6:
             self.getLShort()
             port = this.getShort()
             self.getInt()
             addr = socket.inet_ntop(socket.AF_INET6, self.get(16))
             self.getInt()
-            InternetAddress(addr, port, ver)
+            return InternetAddress(addr, port, ver)
         else:
             raise Exception(f"Unknown address version {ver}")
 
