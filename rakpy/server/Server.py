@@ -17,7 +17,7 @@ from threading import Thread
 from time import sleep, time as timeNow
 
 class Server(Thread):
-    protocol = 10
+    accepted_protocols = [6, 7, 8, 9, 10]
     raknetTps = 100
     raknetTickLength = 1 / raknetTps
     
@@ -69,7 +69,8 @@ class Server(Thread):
         decodedPacket.decode()
         if not decodedPacket.isValid:
             raise Exception("Invalid offline message")
-        if decodedPacket.protocolVersion != self.protocol:
+        print(decodedPacket.protocolVersion)
+        if decodedPacket.protocolVersion not in self.accepted_protocols:
             packet = IncompatibleProtocol()
             packet.protocol = self.protocol
             packet.serverId = self.id
