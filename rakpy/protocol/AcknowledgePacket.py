@@ -9,12 +9,11 @@ class AcknowledgePacket(Packet):
         payload = b""
         records = 0
         self.packets.sorted()
-        count = len(self.packets)
-        if count > 0:
+        if len(self.packets) > 0:
             pointer = 1
             start = self.packets[0]
             last = self.packets[0]
-            while pointer < count:
+            while pointer < len(self.packets):
                 current = self.packets[pointer]
                 pointer += 1
                 diff = current - last
