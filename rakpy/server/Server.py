@@ -1,6 +1,7 @@
 from binutilspy.Binary import Binary
 from rakpy.protocol.PacketIdentifiers import PacketIdentifiers
 from rakpy.protocol.UnconnectedPing import UnconnectedPing
+from rakpy.protocol.UnconnectedPingOpenConnection import UnconnectedPingOpenConnection
 from rakpy.protocol.UnconnectedPong import UnconnectedPong
 from rakpy.protocol.OpenConnectionRequest1 import OpenConnectionRequest1
 from rakpy.protocol.OpenConnectionReply1 import OpenConnectionReply1
@@ -38,6 +39,19 @@ class Server(Thread):
         
     def handleUnconnectedPing(self, data):
         decodedPacket = UnconnectedPing()
+        decodedPacket.buffer = data
+        decodedPacket.decode()
+        if not decodedPacket.isValid:
+            raise Exception("Invalid offline message")
+        packet = UnconnectedPong()
+        packet.time = decodedPacket.time
+        packet.serverId = self.id
+        packet.serverName = self.name
+        packet.encode()
+        return packet.buffer
+
+    def handleUnconnectedPingOpenConnection(self, data):
+        decodedPacket = UnconnectedPingOpenConnection()
         decodedPacket.buffer = data
         decodedPacket.decode()
         if not decodedPacket.isValid:
@@ -92,6 +106,8 @@ class Server(Thread):
         else:
             if header == PacketIdentifiers.UnconnectedPing:
                 self.socket.sendBuffer(self.handleUnconnectedPing(data), (address.getAddress(), address.getPort()))
+            elif header == PacketIdentifiers.UnconnectedPingOpenConnection:
+                self.socket.sendBuffer(self.handleUnconnectedPingOpenConnection(data), (address.getAddress(), address.getPort()))
             elif header == PacketIdentifiers.OpenConnectionRequest1:
                 self.socket.sendBuffer(self.handleOpenConnectionRequest1(data), (address.getAddress(), address.getPort()))
             elif header == PacketIdentifiers.OpenConnectionRequest2:
