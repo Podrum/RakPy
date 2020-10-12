@@ -9,7 +9,14 @@ class TestServer(ServerInterface):
     
     def __init__(self):
         self.server = Server(InternetAddress("0.0.0.0", 19132), self)
-        self.name = self.makeName()
+        edition = input("Choose Edition [mcbe/mcpi] ")
+        if edition.lower() == "mcbe":
+            self.name = self.makeName()
+        elif edition.lower() == "mcpi":
+            self.name = "MCCPP;Demo;MyServer"
+        else:
+            print("Invalid Edition")
+            exit()
         self.server.name = self.name
         
     def makeName(self):
