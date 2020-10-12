@@ -22,7 +22,7 @@ class DataPacket(Packet):
             if data == b"":
                 break
             packet = EncapsulatedPacket().fromBinary(data)
-            self.packets.append(deepcopy(packet))
+            self.packets.append(packet)
             self.offset += len(data)
             
     def length(self):
