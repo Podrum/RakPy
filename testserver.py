@@ -1,7 +1,9 @@
+import os
 from rakpy.server.Server import Server
 from rakpy.server.ServerInterface import ServerInterface
 from rakpy.utils.InternetAddress import InternetAddress
 from rakpy.utils.MinecraftServerName import MinecraftServerName
+import signal
 
 class TestServer(ServerInterface):
     server = None
@@ -16,7 +18,7 @@ class TestServer(ServerInterface):
             self.name = "MCCPP;Demo;MyServer"
         else:
             print("Invalid Edition")
-            exit()
+            os.kill(os.getpid(), signal.SIGTERM)
         self.server.name = self.name
         
     def makeName(self):
