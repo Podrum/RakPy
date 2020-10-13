@@ -76,4 +76,5 @@ class EncapsulatedPacket:
         value += 3 if self.messageIndex is not None else 0
         value += 4 if self.orderIndex is not None else 0
         value += 10 if self.split else 0
+        return value
         
