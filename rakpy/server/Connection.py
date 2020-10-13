@@ -91,7 +91,7 @@ class Connection:
             if len(self.packetToSend) > 2048:
                 self.packetToSend = []
         if len(self.needAck) > 0:
-            for identifierACK, indexes in enumerate(self.needACK):
+            for identifierACK, indexes in self.needACK.items():
                 if len(indexes) == 0:
                     del self.needACK[identifierACK]
                     # Todo add Notify ACK
@@ -244,7 +244,7 @@ class Connection:
     def addToQueue(self, pk, flags = priority["Normal"]):
         priority = flags & 0b0000111
         if pk.needAck and pk.messageIndex is not None:
-            self.needACK.insert(pk.identifierAck, pk.messageIndex)
+            self.needACK[pk.identifierAck] = pk.messageIndex
         if priority == self.priority["Immediate"]:
             packet = DataPacket()
             packet.sequenceNumber = self.sendSequenceNumber
