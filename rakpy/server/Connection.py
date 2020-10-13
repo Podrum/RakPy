@@ -149,10 +149,7 @@ class Connection:
             self.windowStart += diff
             self.windowEnd += diff
         for packet in dataPacket.packets:
-            if isinstance(packet, bytes):
-                pass
-            else:
-                self.receivePacket(packet)
+            self.receivePacket(packet)
             
     def handleAck(self, buffer):
         packet = Ack()
