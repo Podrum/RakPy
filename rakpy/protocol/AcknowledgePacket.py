@@ -8,7 +8,7 @@ class AcknowledgePacket(Packet):
     def encodePayload(self):
         payload = b""
         records = 0
-        self.packets.sorted()
+        self.packets.sort()
         if len(self.packets) > 0:
             pointer = 1
             start = self.packets[0]
