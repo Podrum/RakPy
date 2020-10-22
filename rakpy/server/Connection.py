@@ -45,6 +45,7 @@ class Connection:
     reliableWindow = {}
     lastReliableIndex = -1
     receivedWindow = []
+    sequenceNumber = 0
     lastSequenceNumber = -1
     sendSequenceNumber = 0
     messageIndex = 0
@@ -84,16 +85,16 @@ class Connection:
                 pk.encode()
                 self.recoveryQueue[pk.sequenceNumber] = pk
                 del self.packetToSend[key]
-                #self.sendPacket(pk)
+                #self.sendPacket(pk) #ToDo
                 limit -= 1
                 if limit <= 0:
                     break
             if len(self.packetToSend) > 2048:
                 self.packetToSend = []
         if len(self.needAck) > 0:
-            for identifierACK, indexes in self.needACK.items():
+            for identifierACK, indexes in self.needAck.items():
                 if len(indexes) == 0:
-                    del self.needACK[identifierACK]
+                    del self.needAck[identifierACK]
                     # Todo add Notify ACK
         for seq, pk in dict(self.recoveryQueue).items():
             if pk.sendTime < (timeNow() - 8):
@@ -145,7 +146,7 @@ class Connection:
                     self.nackQueue.append(i)
                 i += 1
         if diff >= 1:
-            lastSequenceNumber = dataPacket.sequenceNumber
+            self.lastSequenceNumber = dataPacket.sequenceNumber
             self.windowStart += diff
             self.windowEnd += diff
         for packet in dataPacket.packets:
@@ -158,9 +159,9 @@ class Connection:
         for seq in packet.packets:
             if seq in self.recoveryQueue:
                 for pk in self.recoveryQueue[seq].packets:
-                    if isinstance(pk, EncapsulatedPacket) and pk.needACK and pk.messageIndex is not None:
+                    if isinstance(pk, EncapsulatedPacket) and pk.needAck and pk.messageIndex is not None:
                         del self.needAck[pk.identifierAck]
-                del recoveryQueue[seq]
+                del self.recoveryQueue[seq]
                 
     def handleNack(self, buffer):
         packet = Nack()
@@ -207,9 +208,9 @@ class Connection:
                 
     def addEncapsulatedToQueue(self, packet, flags = priority["Normal"]):
         packet.needAck = flags & 0b00001000
-        if (packet.needAck > 0) == True:
+        if packet.needAck > 0:
             self.needAck[packet.identifierACK] = []
-        if packet.reliability >= 2 and packet.reliability <= 7:
+        if 2 <= packet.reliability <= 7:
             packet.messageIndex = self.messageIndex
             self.messageIndex += 1
             if packet.reliability == 3:
@@ -244,7 +245,7 @@ class Connection:
     def addToQueue(self, pk, flags = priority["Normal"]):
         priority = flags & 0b0000111
         if pk.needAck and pk.messageIndex is not None:
-            self.needACK[pk.identifierAck] = pk.messageIndex
+            self.needAck[pk.identifierAck] = pk.messageIndex
         if priority == self.priority["Immediate"]:
             packet = DataPacket()
             packet.sequenceNumber = self.sendSequenceNumber
@@ -297,7 +298,7 @@ class Connection:
                     dataPacket.decode()
                     serverPort = self.server.socket.address.port
                     if dataPacket.address.port == serverPort:
-                        self.state = status["Connected"]
+                        self.state = self.status["Connected"]
                         self.server.interface.onOpenConnection(self)
             elif id == PacketIdentifiers.DisconnectNotification:
                 self.disconnect('client disconnect')
@@ -314,7 +315,7 @@ class Connection:
                 sendPacket.buffer = pk.buffer
                 self.addToQueue(sendPacket)
         elif self.state == self.status["Connected"]:
-            self.interface.onEncapsulated(packet, self.address)
+            self.server.interface.onEncapsulated(packet, self.address)
     
     def handleSplit(self, packet):
         if packet.splitId in self.splitPackets:
@@ -346,4 +347,4 @@ class Connection:
         self.server.socket.sendBuffer(packet.buffer, (self.address.getAddress(), self.address.getPort()))
 
     def close(self):
-        self.addEncapsulatedToQueue(EncapsulatedPacket.fromBinary('\x00\x00\x08\x15'), self.priority[Immediate])
+        self.addEncapsulatedToQueue(EncapsulatedPacket.fromBinary('\x00\x00\x08\x15'), self.priority["Immediate"])
