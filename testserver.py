@@ -10,7 +10,6 @@ class TestServer(ServerInterface):
     name = None
     
     def __init__(self):
-        self.server = Server(InternetAddress("0.0.0.0", 19132), self)
         edition = input("Choose Edition [mcbe/mcpi] ")
         if edition.lower() == "mcbe":
             self.name = self.makeName()
@@ -19,6 +18,7 @@ class TestServer(ServerInterface):
         else:
             print("Invalid Edition")
             os.kill(os.getpid(), signal.SIGTERM)
+        self.server = Server(InternetAddress("0.0.0.0", 19132), self)
         self.server.name = self.name
         
     def makeName(self):
