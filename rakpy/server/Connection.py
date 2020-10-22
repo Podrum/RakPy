@@ -126,7 +126,7 @@ class Connection:
     def handleDatagram(self, buffer):
         dataPacket = DataPacket()
         dataPacket.buffer = buffer
-        dataPacket.decode()
+        dataPacket.decodePayload()
         if dataPacket.sequenceNumber < self.windowStart:
             return
         if dataPacket.sequenceNumber > self.windowEnd:
@@ -175,7 +175,7 @@ class Connection:
                 del self.recoveryQueue[seq]
                 
     def receivePacket(self, packet):
-        if packet.messageIndex != None:
+        if packet.messageIndex is None:
             self.handlePacket(packet)
         else:
             if packet.messageIndex < self.reliableWindowStart:
