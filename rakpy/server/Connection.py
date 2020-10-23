@@ -139,7 +139,7 @@ class Connection:
             del self.nackQueue[dataPacket.sequenceNumber]
         self.ackQueue.append(dataPacket.sequenceNumber)
         self.receivedWindow.append(dataPacket.sequenceNumber)
-        if diff is not 1:
+        if diff != 1:
             i = self.lastSequenceNumber + 1
             while i < dataPacket.sequenceNumber:
                 if i not in self.receivedWindow:
