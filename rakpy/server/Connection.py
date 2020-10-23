@@ -127,7 +127,7 @@ class Connection:
     def handleDatagram(self, buffer):
         dataPacket = DataPacket()
         dataPacket.buffer = buffer
-        dataPacket.decodePayload()
+        dataPacket.decode()
         if dataPacket.sequenceNumber < self.windowStart:
             return
         if dataPacket.sequenceNumber > self.windowEnd:
@@ -139,7 +139,7 @@ class Connection:
             del self.nackQueue[dataPacket.sequenceNumber]
         self.ackQueue.append(dataPacket.sequenceNumber)
         self.receivedWindow.append(dataPacket.sequenceNumber)
-        if diff != 1:
+        if diff is not 1:
             i = self.lastSequenceNumber + 1
             while i < dataPacket.sequenceNumber:
                 if i not in self.receivedWindow:
