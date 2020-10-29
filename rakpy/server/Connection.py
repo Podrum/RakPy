@@ -150,6 +150,8 @@ class Connection:
             self.windowStart += diff
             self.windowEnd += diff
         for packet in dataPacket.packets:
+            if isinstance(packet, bytes):
+                packet = EncapsulatedPacket().fromBinary(packet)
             self.receivePacket(packet)
             
     def handleAck(self, buffer):
