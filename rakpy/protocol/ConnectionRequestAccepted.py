@@ -15,7 +15,7 @@ class ConnectionRequestAccepted(Packet):
         self.putAddress(self.clientAddress)
         self.putShort(self.systemIndex)
         for i in range(0, 20):
-            self.putAddress(self.systemAddresses[i] if len(self.systemAddresses) > i else InternetAddress("127.0.0.1", 0, 4))
+            self.putAddress(self.systemAddresses[i] if len(self.systemAddresses) > i else InternetAddress("0.0.0.0", 0, 4))
         self.putLong(self.requestTime)
         self.putLong(self.time)
         
