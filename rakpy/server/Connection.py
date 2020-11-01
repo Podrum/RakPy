@@ -151,6 +151,8 @@ class Connection:
         for packet in dataPacket.packets:
             if isinstance(packet, EncapsulatedPacket):
                 self.receivePacket(packet)
+            else:
+                print(packet)
             
     def handleAck(self, buffer):
         packet = Ack()
