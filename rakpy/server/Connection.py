@@ -121,8 +121,7 @@ class Connection:
             return self.handleAck(buffer)
         if header & BitFlags.Nack:
             return self.handleNack(buffer)
-        else:
-            return self.handleDatagram(buffer)
+        return self.handleDatagram(buffer)
         
     def handleDatagram(self, buffer):
         dataPacket = DataPacket()
