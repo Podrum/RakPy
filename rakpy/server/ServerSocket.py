@@ -28,7 +28,7 @@ class ServerSocket:
           
     def sendBuffer(self, buffer, address):
         data = self.socket.sendto(buffer, address)
-        print(f"OUT -> {data}")
+        print(f"OUT -> {buffer}")
         return data
     
     def closeSocket(self):
