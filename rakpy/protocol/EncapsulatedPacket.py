@@ -23,8 +23,7 @@ class EncapsulatedPacket:
         offset += 1
         packet.reliability = (header & 224) >> 5
         packet.split = (header & BitFlags.Split) > 0
-        length = Binary.readShort(buffer[offset:offset + 2])
-        length >>= 3
+        length = Binary.readShort(buffer[offset:offset + 2]) >> 3
         offset += 2
         if length == 0:
             raise Exception("Got an empty encapsulated packet")
@@ -77,4 +76,3 @@ class EncapsulatedPacket:
         value += 4 if self.orderIndex is not None else 0
         value += 10 if self.split else 0
         return value
-        
