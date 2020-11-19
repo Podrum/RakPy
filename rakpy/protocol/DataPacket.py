@@ -1,4 +1,3 @@
-from copy import deepcopy
 from rakpy.protocol.BitFlags import BitFlags
 from rakpy.protocol.EncapsulatedPacket import EncapsulatedPacket
 from rakpy.protocol.Packet import Packet
