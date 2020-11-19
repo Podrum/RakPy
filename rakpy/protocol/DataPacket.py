@@ -23,7 +23,7 @@ class DataPacket(Packet):
                 break
             packet = EncapsulatedPacket().fromBinary(data)
             self.packets.append(packet)
-            self.offset += len(data)
+            self.offset += packet.getTotalLength()
             
     def length(self):
         length = 4
