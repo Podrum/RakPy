@@ -178,7 +178,7 @@ class Connection:
                 self.reliableWindowEnd += 1
                 self.handlePacket(packet)
                 if len(self.reliableWindow) > 0:
-                    windows = deepcopy(self.reliableWindow)
+                    windows = self.reliableWindow
                     reliableWindow = {}
                     windows = dict(sorted(windows.items()))
                     for k, v in windows.items():
@@ -196,9 +196,6 @@ class Connection:
                 self.reliableWindow[packet.messageIndex] = packet
                 
     def addEncapsulatedToQueue(self, packet, flags = priority["Normal"]):
-        packet.needAck = flags & 0b00001000
-        if packet.needAck > 0:
-            self.needAck[packet.identifierACK] = []
         if 2 <= packet.reliability <= 7:
             packet.messageIndex = self.messageIndex
             self.messageIndex += 1
@@ -233,17 +230,11 @@ class Connection:
             
     def addToQueue(self, pk, flags = priority["Normal"]):
         priority = flags & 0b0000111
-        if pk.needAck and pk.messageIndex is not None:
-            self.needAck[pk.identifierAck] = pk.messageIndex
         if priority == self.priority["Immediate"]:
             packet = DataPacket()
             packet.sequenceNumber = self.sendSequenceNumber
             self.sendSequenceNumber += 1
-            if pk.needAck:
-                packet.packets.append(deepcopy(pk))
-                pk.needAck = False
-            else:
-                packet.packets.append(pk.toBinary())
+            packet.packets.append(pk)
             self.sendPacket(packet)
             packet.sendTime = timeNow()
             self.recoveryQueue[packet.sequenceNumber] = packet
@@ -251,11 +242,7 @@ class Connection:
         length = len(self.sendQueue)
         if (length + pk.getTotalLength()) > self.mtuSize:
             self.sendTheQueue()
-        if pk.needAck:
-            self.sendQueue.packets.append(deepcopy(pk))
-            pk.needACK = False
-        else:
-            self.sendQueue.packets.append(pk.toBinary())
+        self.sendQueue.packets.append(pk)
 
     def handlePacket(self, packet):
         if packet.split:
