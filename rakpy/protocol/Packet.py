@@ -5,7 +5,6 @@ from rakpy.utils.InternetAddress import InternetAddress
 
 class Packet(BinaryStream):
     id = -1
-    
     sendTime = None
     
     def getString(self):
@@ -63,7 +62,6 @@ class Packet(BinaryStream):
     def encodePayload(self): pass
         
     def encode(self):
-        self.reset()
         self.encodeHeader()
         self.encodePayload()
         
@@ -73,6 +71,5 @@ class Packet(BinaryStream):
         return self.getByte()
     
     def decode(self):
-        self.offset = 0
         self.decodeHeader()
         self.decodePayload()
