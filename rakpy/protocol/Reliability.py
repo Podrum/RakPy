@@ -8,44 +8,30 @@ class Reliability:
     reliableAckReceipt = 6
     reliableOrderedAckReceipt = 7
     
-    def isReliable(self, reliability):
-        if reliability == self.reliable:
+    @staticmethod
+    def isReliable(reliability):
+        if reliability == Reliability.reliable:
             return True
-        elif reliability == self.reliableOrdered:
+        if reliability == Reliability.reliableOrdered:
             return True
-        elif reliability == self.reliableSequenced:
+        if reliability == Reliability.reliableSequenced:
             return True
-        elif reliability == self.reliableAckReceipt:
-            return True
-        elif reliability == self.reliableOrderedAckReceipt:
-            return True
-        else:
-            return False
+        return False
         
-    def isSequenced(self, reliability):
-        if reliability == self.unreliableSequenced:
+    @staticmethod
+    def isSequenced(reliability):
+        if reliability == Reliability.unreliableSequenced:
             return True
-        elif reliability == self.reliableSequenced:
+        if reliability == Reliability.reliableSequenced:
             return True
-        else:
-            return False
-        
-    def isOrdered(self, reliability):
-        if reliability == self.reliableOrdered:
+        return False
+       
+    @staticmethod
+    def isSequencedOrOrdered(reliability):
+        if reliability == Reliability.unreliableSequenced:
             return True
-        elif reliability == self.reliableOrderedAckReceipt:
+        if reliability == Reliability.reliableOrdered:
             return True
-        else:
-            return False
-        
-    def isSequencedOrOrdered(self, reliability):
-        if reliability == self.unreliableSequenced:
+        if reliability == Reliability.reliableSequenced:
             return True
-        elif reliability == self.reliableOrdered:
-            return True
-        elif reliability == self.reliableSequenced:
-            return True
-        elif reliability == self.reliableOrderedAckReceipt:
-            return True
-        else:
-            return False
+        return False
