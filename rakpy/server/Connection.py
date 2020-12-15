@@ -49,7 +49,6 @@ class Connection:
     sendSequenceNumber = 0
     messageIndex = 0
     channelIndex = []
-    needAck = {}
     splitId = 0
     lastUpdate = None
     isActive = False
