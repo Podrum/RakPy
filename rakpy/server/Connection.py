@@ -228,7 +228,7 @@ class Connection:
             self.addToQueue(packet, flags)
             
     def addToQueue(self, pk, flags = priority["Normal"]):
-        priority = flags & 0b0000111
+        priority = flags & 0b1
         if priority == self.priority["Immediate"]:
             packet = DataPacket()
             packet.sequenceNumber = self.sendSequenceNumber
@@ -322,4 +322,4 @@ class Connection:
         self.server.socket.sendBuffer(packet.buffer, (self.address.getAddress(), self.address.getPort()))
 
     def close(self):
-        self.addEncapsulatedToQueue(EncapsulatedPacket().fromBinary('\x00\x00\x08\x15'), self.priority["Immediate"])
+        self.addEncapsulatedToQueue(EncapsulatedPacket.fromBinary(BinaryStream('\x00\x00\x08\x15')), self.priority["Immediate"])
