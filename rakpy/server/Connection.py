@@ -1,4 +1,3 @@
-from copy import deepcopy
 from binutilspy.Binary import Binary
 from binutilspy.BinaryStream import BinaryStream
 from rakpy.protocol.Ack import Ack
@@ -85,25 +84,19 @@ class Connection:
                 pk.encode()
                 self.recoveryQueue[pk.sequenceNumber] = pk
                 del self.packetToSend[key]
-                #self.sendPacket(pk) #ToDo
+                self.sendPacket(pk)
                 limit -= 1
                 if limit <= 0:
                     break
             if len(self.packetToSend) > 2048:
                 self.packetToSend = []
-        if len(self.needAck) > 0:
-            for identifierACK, indexes in self.needAck.items():
-                if len(indexes) == 0:
-                    del self.needAck[identifierACK]
-                    # Todo add Notify ACK
         for seq, pk in dict(self.recoveryQueue).items():
             if pk.sendTime < (timeNow() - 8):
                 self.packetToSend.append(pk)
                 del self.recoveryQueue[seq]
-        # Should look at that later
-        for seq, value in enumerate(self.receivedWindow):
+        for key, seq in enumerate(self.receivedWindow):
             if seq < self.windowStart:
-                del self.receivedWindow[seq]
+                del self.receivedWindow[key]
             else:
                 break
         self.sendTheQueue()
@@ -149,10 +142,7 @@ class Connection:
             self.windowStart += diff
             self.windowEnd += diff
         for packet in dataPacket.packets:
-            if isinstance(packet, EncapsulatedPacket):
-                self.receivePacket(packet)
-            else:
-                print(packet)
+            self.receivePacket(packet)
             
     def handleAck(self, buffer):
         packet = Ack()
@@ -160,9 +150,6 @@ class Connection:
         packet.decode()
         for seq in packet.packets:
             if seq in self.recoveryQueue:
-                for pk in self.recoveryQueue[seq].packets:
-                    if isinstance(pk, EncapsulatedPacket) and pk.needAck and pk.messageIndex is not None:
-                        del self.needAck[pk.identifierAck]
                 del self.recoveryQueue[seq]
                 
     def handleNack(self, buffer):
