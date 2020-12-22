@@ -12,7 +12,7 @@ class DataPacket(Packet):
     def encodePayload(self):
         self.putLTriad(self.sequenceNumber)
         for packet in self.packets:
-            self.put(packet.toBinary().buffer)
+            self.put(packet.toBinary())
         
     def decodePayload(self):
         self.sequenceNumber = self.getLTriad()
