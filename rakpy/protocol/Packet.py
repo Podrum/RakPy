@@ -54,22 +54,18 @@ class Packet(BinaryStream):
             self.put(socket.inet_pton(socket.AF_INET6, addr))
             self.putInt(0)
         else:
-            raise Exception(f"Unknown address version {ver}")
-    
-    def encodeHeader(self):
-        self.putByte(self.id)
+            raise Exception(f"Unknown address version {ver}")     
         
-    def encodePayload(self): pass
+    def encodePayload(self):
+        pass
         
     def encode(self):
-        self.encodeHeader()
+        self.putByte(self.id)
         self.encodePayload()
         
-    def decodePayload(self): pass
-    
-    def decodeHeader(self):
-        return self.getByte()
+    def decodePayload(self):
+        pass
     
     def decode(self):
-        self.decodeHeader()
+        self.getByte()
         self.decodePayload()
