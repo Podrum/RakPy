@@ -162,7 +162,7 @@ class Connection:
                 self.packetToSend.append(pk)
                 del self.recoveryQueue[seq]
                 
-    def receivePacket(self, packet):+
+    def receivePacket(self, packet):
         if packet.messageIndex is None:
             self.handlePacket(packet)
         else:
