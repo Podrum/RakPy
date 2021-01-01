@@ -75,11 +75,17 @@ class BinaryStream:
     def getFloat(self):
         return struct.unpack(">f", self.get(4))[0]
     
+    def getRoundedFloat(self):
+        return round(self.getFloat())
+    
     def putFloat(self, value):
         self.put(struct.pack(">f", value))
         
     def getLFloat(self):
         return struct.unpack("<f", self.get(4))[0]
+    
+    def getRoundedLFloat(self):
+        return round(self.getLFloat())
     
     def putLFloat(self, value):
         self.put(struct.pack("<f", value))
