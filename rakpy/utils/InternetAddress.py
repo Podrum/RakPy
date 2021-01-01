@@ -7,12 +7,3 @@ class InternetAddress:
         self.address = address
         self.port = port
         self.version = version
-
-    def getAddress(self):
-        return self.address
-
-    def getPort(self):
-        return self.port
-
-    def getVersion(self):
-        return self.version
