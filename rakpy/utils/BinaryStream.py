@@ -120,3 +120,7 @@ class BinaryStream:
         except Exception:
             return True
         return False
+
+    def reset(self):
+        self.buffer = b""
+        self.offset = 0
