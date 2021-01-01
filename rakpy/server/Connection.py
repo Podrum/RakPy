@@ -58,8 +58,7 @@ class Connection:
         self.mtuSize = mtuSize
         self.address = address
         self.lastUpdate = int(timeNow())
-        for i in range(0, 32):
-            self.channelIndex.insert(i, 0)
+        self.channelIndex = [0] * 32
             
     def update(self, timestamp):
         if not self.isActive and (self.lastUpdate + 10000) < timestamp:
@@ -78,11 +77,11 @@ class Connection:
             self.nackQueue = []
         if len(self.packetToSend) > 0:
             limit = 16
-            for key, pk in enumerate(self.packetToSend):
+            for count, pk in enumerate(self.packetToSend):
                 pk.sendTime = timestamp
                 pk.encode()
                 self.recoveryQueue[pk.sequenceNumber] = pk
-                del self.packetToSend[key]
+                del self.packetToSend[count]
                 self.sendPacket(pk)
                 limit -= 1
                 if limit <= 0:
@@ -93,9 +92,9 @@ class Connection:
             if pk.sendTime < (timeNow() - 8):
                 self.packetToSend.append(pk)
                 del self.recoveryQueue[seq]
-        for key, seq in enumerate(self.receivedWindow):
+        for count, seq in enumerate(self.receivedWindow):
             if seq < self.windowStart:
-                del self.receivedWindow[key]
+                del self.receivedWindow[count]
             else:
                 break
         self.sendTheQueue()
@@ -123,11 +122,11 @@ class Connection:
             return
         if dataPacket.sequenceNumber > self.windowEnd:
             return
-        if dataPacket.sequenceNumber < len(self.receivedWindow):
+        if dataPacket.sequenceNumber in self.receivedWindow:
             return
         diff = dataPacket.sequenceNumber - self.lastSequenceNumber
         if dataPacket.sequenceNumber < len(self.nackQueue):
-            del self.nackQueue[dataPacket.sequenceNumber]
+            self.nackQueue.remove(dataPacket.sequenceNumber)
         self.ackQueue.append(dataPacket.sequenceNumber)
         self.receivedWindow.append(dataPacket.sequenceNumber)
         if diff != 1:
@@ -163,7 +162,7 @@ class Connection:
                 self.packetToSend.append(pk)
                 del self.recoveryQueue[seq]
                 
-    def receivePacket(self, packet):
+    def receivePacket(self, packet):+
         if packet.messageIndex is None:
             self.handlePacket(packet)
         else:
@@ -177,13 +176,8 @@ class Connection:
                 self.reliableWindowEnd += 1
                 self.handlePacket(packet)
                 if len(self.reliableWindow) > 0:
-                    windows = self.reliableWindow
-                    reliableWindow = {}
-                    windows = dict(sorted(windows.items()))
-                    for k, v in windows.items():
-                        reliableWindow[k] = v
-                    self.reliableWindow = reliableWindow
-                    for seqIndex, pk in self.reliableWindow:
+                    self.reliableWindow = dict(sorted(self.reliableWindow.items()))
+                    for seqIndex, pk in dict(self.reliableWindow).items():
                         if (seqIndex - self.lastReliableIndex) != 1:
                             break
                         self.lastReliableIndex += 1
@@ -238,7 +232,7 @@ class Connection:
             packet.sendTime = timeNow()
             self.recoveryQueue[packet.sequenceNumber] = packet
             return
-        length = len(self.sendQueue)
+        length = self.sendQueue.length
         if (length + pk.getTotalLength()) > self.mtuSize:
             self.sendTheQueue()
         self.sendQueue.packets.append(pk)
@@ -261,7 +255,7 @@ class Connection:
                     pk.clientAddress = self.address
                     pk.systemIndex = 0
                     pk.requestTime = dataPacket.time
-                    pk.time = Binary.flipLongEndianness(int(timeNow())) if Binary.ENDIANNESS == Binary.LITTLE_ENDIAN else int(timeNow())
+                    pk.time = int(timeNow())
                     pk.encode()
                     sendPacket = EncapsulatedPacket()
                     sendPacket.reliability = 0
@@ -283,7 +277,7 @@ class Connection:
                 dataPacket.decode()
                 pk = ConnectedPong()
                 pk.pingTime = dataPacket.time
-                pk.pongTime = Binary.flipLongEndianness(int(timeNow())) if Binary.ENDIANNESS == Binary.LITTLE_ENDIAN else int(timeNow())
+                pk.pongTime = int(timeNow())
                 pk.encode()
                 sendPacket = EncapsulatedPacket()
                 sendPacket.reliability = 0

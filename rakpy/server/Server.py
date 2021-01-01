@@ -136,4 +136,4 @@ class Server(Thread):
             if buffer is not None:
                 data, address = buffer
                 self.handle(data, InternetAddress(address[0], address[1]))
-                self.tick()
+            self.tick()
