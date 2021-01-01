@@ -14,6 +14,12 @@ class BinaryStream:
     def put(self, data):
         self.buffer += data
         
+    def getBool(self):
+        return self,get(1)[0] != 0
+    
+    def putBool(self, value):
+        self.put(b"\x01" if value else b"\x00")
+        
     def getShort(self):
         return struct.unpack(">H", self.get(2))[0]
     
