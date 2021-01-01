@@ -316,4 +316,4 @@ class Connection:
         self.server.socket.sendBuffer(packet.buffer, (self.address.address, self.address.port))
 
     def close(self):
-        self.addEncapsulatedToQueue(EncapsulatedPacket.fromBinary(BinaryStream('\x00\x00\x08\x15')), self.priority["Immediate"])
+        self.addEncapsulatedToQueue(EncapsulatedPacket.fromBinary(BinaryStream(b"\x00\x00\x08\x15")), self.priority["Immediate"])
