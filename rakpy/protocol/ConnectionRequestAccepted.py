@@ -17,7 +17,7 @@ class ConnectionRequestAccepted(Packet):
         i = 0
         while i < 20:
             self.putAddress(self.systemAddresses[i] if len(self.systemAddresses) > i else InternetAddress("127.0.0.1", 0, 4))
-        i += 1
+            i += 1
         self.putLong(self.requestTime)
         self.putLong(self.time)
         
