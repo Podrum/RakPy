@@ -25,15 +25,14 @@ class Packet(BinaryStream):
             ])
             port = self.getShort()
             return InternetAddress(addr, port, ver)
-        elif ver == 6:
+        if ver == 6:
             self.getLShort()
             port = self.getShort()
             self.getInt()
             addr = socket.inet_ntop(socket.AF_INET6, self.get(16))
             self.getInt()
             return InternetAddress(addr, port, ver)
-        else:
-            raise Exception(f"Unknown address version {ver}")
+        raise Exception(f"Unknown address version {ver}")
 
     def putAddress(self, address: InternetAddress):
         ver = address.version
