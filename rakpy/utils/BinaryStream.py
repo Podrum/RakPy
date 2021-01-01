@@ -133,8 +133,7 @@ class BinaryStream:
         raise Exception("VarInt did not terminate after 5 bytes!")
         
     def putVarInt(self, value):
-        value = value << 32 >> 32
-        return self.putUnsignedVarInt((value << 1) ^ (value >> 31))
+        return self.putUnsignedVarInt(value << 1 if value >= 0 else (-value - 1) << 1 | 1)
     
     def putUnsignedVarInt(self, value):
         stream = BinaryStream()
