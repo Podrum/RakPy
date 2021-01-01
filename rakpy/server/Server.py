@@ -8,8 +8,8 @@ from rakpy.protocol.OpenConnectionRequest2 import OpenConnectionRequest2
 from rakpy.protocol.OpenConnectionReply2 import OpenConnectionReply2
 from rakpy.protocol.IncompatibleProtocol import IncompatibleProtocol
 from rakpy.server.Connection import Connection
-from rakpy.server.ServerInterface import ServerInterface
-from rakpy.server.ServerSocket import ServerSocket
+from rakpy.server.Interface import Interface
+from rakpy.server.Socket import Socket
 from rakpy.utils.InternetAddress import InternetAddress
 import os
 from threading import Thread
@@ -29,11 +29,11 @@ class Server(Thread):
     
     def __init__(self, address, interface = None):
         super().__init__()
-        self.socket = ServerSocket(address)
+        self.socket = Socket(address)
         if interface is not None:
             self.interface = interface
         else:
-            self.interface = ServerInterface()
+            self.interface = Interface()
         self.start()
         
     def handleUnconnectedPing(self, data):
