@@ -1,4 +1,4 @@
-from binutilspy.Binary import Binary
+from binutilspy.BinaryStream import BinaryStream
 from rakpy.protocol.Packet import Packet
 from rakpy.protocol.PacketIdentifiers import PacketIdentifiers
 
@@ -6,7 +6,7 @@ class AcknowledgePacket(Packet):
     packets = []
     
     def encodePayload(self):
-        payload = b""
+        stream = BinaryStream()
         records = 0
         self.packets.sort()
         if len(self.packets) > 0:
@@ -21,30 +21,31 @@ class AcknowledgePacket(Packet):
                     last = current
                 elif diff > 1:
                     if start == last:
-                        payload += Binary.writeByte(1)
-                        payload += Binary.writeLTriad(start)
+                        stream.putByte(1)
+                        stream.putLTriad(start)
                         start = last = current
                     else:
-                        payload += Binary.writeByte(0)
-                        payload += Binary.writeLTriad(start)
-                        payload += Binary.writeLTriad(last)
+                        stream.putByte(0)
+                        stream.putLTriad(start)
+                        stream.putLTriad(last)
                         start = last = current
                     records += 1
             if start == last:
-                payload += Binary.writeByte(1)
-                payload += Binary.writeLTriad(start)
+                stream.putByte(1)
+                stream.putLTriad(start)
             else:
-                payload += Binary.writeByte(0)
-                payload += Binary.writeLTriad(start)
-                payload += Binary.writeLTriad(last)
+                stream.putByte(0)
+                stream.putLTriad(start)
+                stream.putLTriad(last)
             records += 1
         self.putShort(records)
-        self.put(payload)
+        self.put(stream.buffer)
           
     def decodePayload(self):
         self.packets = []
         recordCount = self.getShort()
-        for i in range(0, recordCount):
+        i = 0
+        while i < recordCount):
             recordType = self.getByte()
             if recordType == 0:
                 start = self.getLTriad()
@@ -57,3 +58,4 @@ class AcknowledgePacket(Packet):
                     current += 1
             else:
                 self.packets.append(self.getLTriad())
+            i += 1
