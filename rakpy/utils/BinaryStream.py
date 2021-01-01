@@ -101,3 +101,15 @@ class BinaryStream:
     
     def putLDouble(self, value):
         self.put(struct.pack("<d", value))
+
+    def getLong(self):
+        return struct.unpack(">q", self.get(8))[0]
+    
+    def putLong(self, value):
+        self.put(struct.pack(">q", value))
+        
+    def getLLong(self):
+        return struct.unpack("<q", self.get(8))[0]
+    
+    def putLLong(self, value):
+        self.put(struct.pack("<q", value))
