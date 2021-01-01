@@ -116,8 +116,8 @@ class BinaryStream:
         
     def getVarInt(self):
         raw = self.getUnsignedVarInt()
-        temp = (((raw << 63) >> 63) ^ raw) >> 1
-        return temp ^ (raw & (1 << 63))
+        temp = -(raw >> 1) - 1 if (raw & 1) else raw >> 1
+        return temp
     
     def getUnsignedVarInt(self):
         value = 0
