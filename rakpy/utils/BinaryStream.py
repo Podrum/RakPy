@@ -14,6 +14,24 @@ class BinaryStream:
     def put(self, data):
         self.buffer += data
         
+    def getShort(self):
+        return struct.unpack(">H", self.get(2))[0]
+    
+    def getSignedShort(self):
+        return struct.unpack(">h", self.get(2))[0]
+    
+    def putShort(self, value)
+        self.put(struct.pack(">H", value))
+        
+    def getLShort(self):
+        return struct.unpack("<H", self.get(2))[0]
+    
+    def getSignedLShort(self):
+        return struct.unpack("<h", self.get(2))[0]
+    
+    def putLShort(self, value)
+        self.put(struct.pack("<h", value))
+        
     def getTriad(self):
         return struct.unpack(">i", b"\x00" + self.get(3))[0]
     
