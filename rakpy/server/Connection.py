@@ -189,7 +189,7 @@ class Connection:
                 self.reliableWindow[packet.messageIndex] = packet
                 
     def addEncapsulatedToQueue(self, packet, flags = priority["Normal"]):
-        if 2 <= packet.reliability <= 7:
+        if 2 <= packet.reliability <= 7 and packet.reliability != 5:
             packet.messageIndex = self.messageIndex
             self.messageIndex += 1
             if packet.reliability == 3:
