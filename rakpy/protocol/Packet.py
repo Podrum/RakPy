@@ -36,9 +36,9 @@ class Packet(BinaryStream):
             raise Exception(f"Unknown address version {ver}")
 
     def putAddress(self, address: InternetAddress):
-        ver = address.getVersion()
-        addr = address.getAddress()
-        port = address.getPort()
+        ver = address.version
+        addr = address.address
+        port = address.port
         self.putByte(ver)
         if ver == 4:
             parts = str(addr).split(".")
