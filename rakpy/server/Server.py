@@ -1,4 +1,3 @@
-from binutilspy.Binary import Binary
 from rakpy.protocol.PacketIdentifiers import PacketIdentifiers
 from rakpy.protocol.UnconnectedPing import UnconnectedPing
 from rakpy.protocol.UnconnectedPingOpenConnection import UnconnectedPingOpenConnection
@@ -21,7 +20,7 @@ class Server(Thread):
     raknetTps = 100
     raknetTickLength = 1 / raknetTps
     
-    id = Binary.readLong(os.urandom(8))
+    id = int.from_bytes(os.urandom(4), "little")
     name = None
     socket = None
     interface = None
