@@ -1,6 +1,6 @@
 import socket
 
-from binutilspy.BinaryStream import BinaryStream
+from rakpy.utils.BinaryStream import BinaryStream
 from rakpy.utils.InternetAddress import InternetAddress
 
 class Packet(BinaryStream):
