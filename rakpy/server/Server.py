@@ -92,30 +92,30 @@ class Server(Thread):
         packet.mtu = decodedPacket.mtu
         packet.clientAddress = address
         packet.encode()
-        token = str(address.getAddress()) + ":" + str(address.getPort())
+        token = str(address.address) + ":" + str(address.port)
         connection = Connection(self, decodedPacket.mtu, address)
         self.connections[token] = connection
         return packet.buffer
         
     def handle(self, data, address):
         header = data[0]
-        token = str(address.getAddress()) + ":" + str(address.getPort())
+        token = str(address.address) + ":" + str(address.port)
         if token in self.connections:
             connection = self.connections[token]
             connection.receive(data)
         else:
             if header == PacketIdentifiers.UnconnectedPing:
-                self.socket.sendBuffer(self.handleUnconnectedPing(data), (address.getAddress(), address.getPort()))
+                self.socket.sendBuffer(self.handleUnconnectedPing(data), (address.address, address.port))
             elif header == PacketIdentifiers.UnconnectedPingOpenConnection:
-                self.socket.sendBuffer(self.handleUnconnectedPingOpenConnection(data), (address.getAddress(), address.getPort()))
+                self.socket.sendBuffer(self.handleUnconnectedPingOpenConnection(data), (address.address, address.port))
             elif header == PacketIdentifiers.OpenConnectionRequest1:
-                self.socket.sendBuffer(self.handleOpenConnectionRequest1(data), (address.getAddress(), address.getPort()))
+                self.socket.sendBuffer(self.handleOpenConnectionRequest1(data), (address.address, address.port))
             elif header == PacketIdentifiers.OpenConnectionRequest2:
-                self.socket.sendBuffer(self.handleOpenConnectionRequest2(data, address), (address.getAddress(), address.getPort()))
+                self.socket.sendBuffer(self.handleOpenConnectionRequest2(data, address), (address.address, address.port))
        
     def removeConnection(self, connection, reason):
         address = connection.address
-        token = f"{address.getAddress}:{address.getPort}"
+        token = f"{address.address}:{address.port}"
         if token in self.connections:
             self.connections[token].close()
             del self.connections[token]
