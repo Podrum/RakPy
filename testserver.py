@@ -12,27 +12,14 @@ class TestServer(Interface):
     def __init__(self):
         edition = input("Choose Edition [mcbe/mcpi] ")
         if edition.lower() == "mcbe":
-            self.name = self.makeName()
+            self.name = "MCPE;Dedicated Server;390;1.14.60;0;10;13253860892328930865;Bedrock level;Survival;1;19132;19133;"
         elif edition.lower() == "mcpi":
-            self.name = "MCCPP;Demo;MyServer"
+            self.name = "MCCPP;Demo;Dedicated Server | 0/10"
         else:
             print("Invalid Edition")
             os.kill(os.getpid(), signal.SIGTERM)
         self.server = Server(InternetAddress("0.0.0.0", 19132), self)
         self.server.name = self.name
-        
-    def makeName(self):
-        mcsn = MinecraftServerName()
-        mcsn.edition = "MCPE"
-        mcsn.name = "MyServer"
-        mcsn.motd = "MyServer"
-        mcsn.protocol = 408
-        mcsn.version = "1.16.20"
-        mcsn.players["online"] = 0
-        mcsn.players["max"] = 500
-        mcsn.gamemode = "Creative"
-        mcsn.serverId = 0
-        return mcsn.toString()
       
     def onOpenConnection(self, connection):
         print("OPEN_CONNECTION")
