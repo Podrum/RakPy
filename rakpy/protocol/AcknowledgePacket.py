@@ -45,7 +45,7 @@ class AcknowledgePacket(Packet):
         self.packets = []
         recordCount = self.getShort()
         i = 0
-        while i < recordCount):
+        while i < recordCount:
             recordType = self.getByte()
             if recordType == 0:
                 start = self.getLTriad()
