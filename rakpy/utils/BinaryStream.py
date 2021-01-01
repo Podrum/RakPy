@@ -10,7 +10,7 @@ class BinaryStream:
         
     def get(self, length):
         self.offset += length
-        return self.buffer[self.offset - length:offset]
+        return self.buffer[self.offset - length:self.offset]
 
     def put(self, data):
         self.buffer += data
