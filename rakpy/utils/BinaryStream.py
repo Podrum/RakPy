@@ -131,6 +131,24 @@ class BinaryStream:
                 return value
             i += 7
         raise Exception("VarInt did not terminate after 5 bytes!")
+        
+    def putVarInt(self, value):
+        value = value << 32 >> 32
+        return self.putUnsignedVarInt((value << 1) ^ (value >> 31))
+    
+    def putUnsignedVarInt(self, value):
+        stream = BinaryStream()
+        value &= 0xffffffff
+        i = 0
+        while i < 5:
+            if (value >> 7) != 0:
+                stream.putByte(value | 0x80)
+            else:
+                stream.putByte(value & 0x7f)
+                self.put(stream.buffer)
+                return
+            value >>= 7
+        self.put(stream.buffer)
 
     def feof(self):
         try:
