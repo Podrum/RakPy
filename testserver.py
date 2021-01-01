@@ -2,7 +2,6 @@ import os
 from rakpy.server.Server import Server
 from rakpy.server.Interface import Interface
 from rakpy.utils.InternetAddress import InternetAddress
-from rakpy.utils.MinecraftServerName import MinecraftServerName
 import signal
 
 class TestServer(Interface):
@@ -18,7 +17,7 @@ class TestServer(Interface):
         else:
             print("Invalid Edition")
             os.kill(os.getpid(), signal.SIGTERM)
-        self.server = Server(InternetAddress(".".join([0, 0, 0, 0]), 19132), self)
+        self.server = Server(InternetAddress(".".join(["0", "0", "0", "0"]), 19132), self)
         self.server.name = self.name
       
     def onOpenConnection(self, connection):
