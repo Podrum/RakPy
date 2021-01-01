@@ -147,13 +147,47 @@ class BinaryStream:
                 self.put(stream.buffer)
                 return
             value >>= 7
+            i += 1
         self.put(stream.buffer)
+        
+    def getVarLong(self):
+        raw = self.getUnsignedVarLong()
+        temp = -(raw >> 1) - 1 if (raw & 1) else raw >> 1
+        return temp
+    
+    def getUnsignedVarLong(self):
+        value = 0
+        i = 0
+        while i <= 63:
+            if self.feof():
+                raise Exception("No bytes left in the buffer")
+            b = self.getByte()
+            value |= ((b & 0x7f) << i)
+            if (b & 0x80) == 0:
+                return value
+            i += 7
+        raise Exception("VarInt did not terminate after 10 bytes!")
+        
+    def putVarLong(self, value):
+        return self.putUnsignedVarLong(value << 1 if value >= 0 else (-value - 1) << 1 | 1)
+    
+    def putUnsignedVarLong(self, value):
+        i = 0
+        while i < 10:
+            if (value >> 7) != 0:
+                self.putByte(value | 0x80)
+            else:
+                self.putByte(value & 0x7f)
+                break
+            value >>= 7
+            i += 1
 
     def feof(self):
         try:
             self.buffer[self.offset]
         except Exception:
-            return True
+          
+        return True
         return False
 
     def reset(self):
