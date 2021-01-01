@@ -20,9 +20,6 @@ class NewIncomingConnection(Packet):
     def decodePayload(self):
         self.address = self.getAddress()
         for i in range(0, 20):
-            if self.offset >= len(self.buffer) - 16:
-                self.systemAddresses.append(InternetAddress("0.0.0.0", 0, 4))
-            else:
-                self.systemAddresses.append(self.getAddress())
+            self.systemAddresses.append(self.getAddress())
         self.pingTime = self.getLong()
         self.pongTime = self.getLong()
