@@ -52,7 +52,7 @@ class BinaryStream:
         return struct.unpack(">i", b"\x00" + self.get(3))[0]
     
     def putTriad(self, value):
-        self.put(struct.pack(">i", value))[1:]
+        self.put(struct.pack(">i", value)[1:])
         
     def getLTriad(self):
         return struct.unpack("<I", self.get(3) + b"\x00")[0]
