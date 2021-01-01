@@ -240,13 +240,13 @@ class Connection:
         if packet.split:
             self.handleSplit(packet)
             return
-        id = packet.buffer[0]
+        pid = packet.buffer[0]
         dataPacket = None
         pk = None
         sendPacket = None
-        if id < 0x80:
+        if pid < 0x80:
             if self.state == self.status["Connecting"]:
-                if id == PacketIdentifiers.ConnectionRequest:
+                if pid == PacketIdentifiers.ConnectionRequest:
                     dataPacket = ConnectionRequest()
                     dataPacket.buffer = packet.buffer
                     dataPacket.decode()
@@ -260,7 +260,7 @@ class Connection:
                     sendPacket.reliability = 0
                     sendPacket.buffer = pk.buffer
                     self.addToQueue(sendPacket, self.priority["Immediate"])
-                elif id == PacketIdentifiers.NewIncomingConnection:
+                elif pid == PacketIdentifiers.NewIncomingConnection:
                     dataPacket = NewIncomingConnection()
                     dataPacket.buffer = packet.buffer
                     dataPacket.decode()
@@ -268,9 +268,9 @@ class Connection:
                     if dataPacket.address.port == serverPort:
                         self.state = self.status["Connected"]
                         self.server.interface.onOpenConnection(self)
-            elif id == PacketIdentifiers.DisconnectNotification:
+            elif pid == PacketIdentifiers.DisconnectNotification:
                 self.disconnect('client disconnect')
-            elif id == PacketIdentifiers.ConnectedPing:
+            elif pid == PacketIdentifiers.ConnectedPing:
                 dataPacket = ConnectedPing()
                 dataPacket.buffer = packet.buffer
                 dataPacket.decode()
