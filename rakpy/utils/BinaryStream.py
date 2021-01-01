@@ -113,3 +113,10 @@ class BinaryStream:
     
     def putLLong(self, value):
         self.put(struct.pack("<q", value))
+
+    def feof(self):
+        try:
+            self.buffer[self.offset]
+        except Exception:
+            return True
+        return False
