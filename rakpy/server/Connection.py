@@ -231,7 +231,7 @@ class Connection:
             packet.sendTime = timeNow()
             self.recoveryQueue[packet.sequenceNumber] = packet
             return
-        length = self.sendQueue.length
+        length = self.sendQueue.length()
         if (length + pk.getTotalLength()) > self.mtuSize:
             self.sendTheQueue()
         self.sendQueue.packets.append(pk)
