@@ -1,6 +1,6 @@
-from binutilspy.BinaryStream import BinaryStream
 from rakpy.protocol.Packet import Packet
 from rakpy.protocol.PacketIdentifiers import PacketIdentifiers
+from rakpy.utils.BinaryStream import BinaryStream
 
 class AcknowledgePacket(Packet):
     packets = []
