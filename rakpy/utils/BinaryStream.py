@@ -14,11 +14,20 @@ class BinaryStream:
     def put(self, data):
         self.buffer += data
         
+    def getByte(self):
+        return struct.unpack("B", self.get(1))[0]
+    
+    def getSignedByte(self):
+        return struct.unpack("b", self.get(1))[0]
+
+    def putByte(self, value):
+        self.put(bytes([value & 0xff]))
+        
     def getBool(self):
-        return self,get(1)[0] != 0
+        return self.getByte() != 0
     
     def putBool(self, value):
-        self.put(b"\x01" if value else b"\x00")
+        self.putByte(1 if value else 0)
         
     def getShort(self):
         return struct.unpack(">H", self.get(2))[0]
