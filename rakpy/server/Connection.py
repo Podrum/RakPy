@@ -296,10 +296,11 @@ class Connection:
         localSplits = self.splitPackets[packet.splitId]
         if len(localSplits) == packet.splitCount:
             pk = EncapsulatedPacket()
-            for count, packet in enumerate(localSplits):
-                BinaryStream.put(packet.buffer)
+            stream = BinaryStream()
+            for index, value in localSplits.items():
+                stream.put(value.buffer)
             del self.splitPackets[packet.splitId]
-            pk.buffer = BinaryStream.buffer
+            pk.buffer = stream.buffer
             self.receivePacket(pk)
     
     def sendTheQueue(self):
