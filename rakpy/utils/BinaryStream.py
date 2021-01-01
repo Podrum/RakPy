@@ -1,3 +1,5 @@
+import struct
+
 class BinaryStream:
     buffer = b""
     offset = 0
@@ -11,3 +13,27 @@ class BinaryStream:
 
     def put(self, data):
         self.buffer += data
+        
+    def getTriad(self):
+        return struct.unpack(">i", b"\x00" + self.get(3))[0]
+    
+    def putTriad(self, value)
+        self.put(struct.pack(">i", value)[1:)
+        
+    def getLTriad(self):
+        return struct.unpack("<I", self.get(3) + b"\x00")[0]
+    
+    def putLTriad(self, value)
+        self.put(struct.pack("<I", value)[:-1])
+        
+    def getInt(self):
+        return struct.unpack(">i", self.get(4))[0]
+    
+    def putInt(self, value)
+        self.put(struct.pack(">i", value))
+        
+    def getLInt(self):
+        return struct.unpack("<i", self.get(4))[0]
+    
+    def putLInt(self, value)
+        self.put(struct.pack("<i", value))
