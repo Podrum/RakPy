@@ -1,11 +1,11 @@
 import os
 from rakpy.server.Server import Server
-from rakpy.server.ServerInterface import ServerInterface
+from rakpy.server.Interface import Interface
 from rakpy.utils.InternetAddress import InternetAddress
 from rakpy.utils.MinecraftServerName import MinecraftServerName
 import signal
 
-class TestServer(ServerInterface):
+class TestServer(Interface):
     server = None
     name = None
     
