@@ -188,6 +188,11 @@ class BinaryStream:
         except Exception:
             return True
         return False
+    
+    def getRemaining(self):
+        buffer = self.buffer[self.offset]
+        self.offset = len(self.buffer)
+        return buffer
 
     def reset(self):
         self.buffer = b""
