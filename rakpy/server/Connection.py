@@ -1,5 +1,3 @@
-from binutilspy.Binary import Binary
-from binutilspy.BinaryStream import BinaryStream
 from rakpy.protocol.Ack import Ack
 from rakpy.protocol.BitFlags import BitFlags
 from rakpy.protocol.ConnectedPing import ConnectedPing
@@ -12,6 +10,7 @@ from rakpy.protocol.Nack import Nack
 from rakpy.protocol.NewIncomingConnection import NewIncomingConnection
 from rakpy.protocol.PacketIdentifiers import PacketIdentifiers
 from rakpy.utils.InternetAddress import InternetAddress
+from rakpy.utils.BinaryStream import BinaryStream
 from time import time as timeNow
 
 class Connection:
