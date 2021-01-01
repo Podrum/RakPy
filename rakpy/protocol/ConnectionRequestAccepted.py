@@ -23,6 +23,6 @@ class ConnectionRequestAccepted(Packet):
         self.clientAddress = self.getAddress()
         self.systemIndex = self.getShort()
         for i in range(0, 20):
-            self.systemAddresses.append(self.getAddress() if self.getOffset + 16 < len(self.getBuffer()) else InternetAddress("127.0.0.1", 0, 4))
+            self.systemAddresses.append(self.getAddress() if self.offset + 16 < len(self.buffer) else InternetAddress("127.0.0.1", 0, 4))
         self.requestTime = self.getLong()
         self.time = self.getLong()
