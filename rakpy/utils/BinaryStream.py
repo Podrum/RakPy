@@ -190,7 +190,7 @@ class BinaryStream:
         return False
     
     def getRemaining(self):
-        buffer = self.buffer[self.offset]
+        buffer = self.buffer[self.offset:]
         self.offset = len(self.buffer)
         return buffer
 
