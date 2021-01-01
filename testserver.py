@@ -18,7 +18,7 @@ class TestServer(Interface):
         else:
             print("Invalid Edition")
             os.kill(os.getpid(), signal.SIGTERM)
-        self.server = Server(InternetAddress("0.0.0.0", 19132), self)
+        self.server = Server(InternetAddress(".".join([0, 0, 0, 0]), 19132), self)
         self.server.name = self.name
       
     def onOpenConnection(self, connection):
