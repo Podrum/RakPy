@@ -186,8 +186,7 @@ class BinaryStream:
         try:
             self.buffer[self.offset]
         except Exception:
-          
-        return True
+            return True
         return False
 
     def reset(self):
