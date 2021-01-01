@@ -113,6 +113,24 @@ class BinaryStream:
     
     def putLLong(self, value):
         self.put(struct.pack("<q", value))
+        
+    def getVarInt(self):
+        raw = self.getUnsignedVarInt()
+        temp = (((raw << 63) >> 63) ^ raw) >> 1
+        return temp ^ (raw & (1 << 63))
+    
+    def getUnsignedVarInt(self):
+        value = 0
+        i = 0
+        while i <= 28:
+            if self.feof():
+                raise Exception("No bytes left in the buffer")
+            b = self.getByte()
+            value |= ((b & 0x7f) << i)
+            if (b & 0x80) == 0:
+                return value
+            i += 7
+        raise Exception("VarInt did not terminate after 5 bytes!")
 
     def feof(self):
         try:
