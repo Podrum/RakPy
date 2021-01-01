@@ -1,4 +1,4 @@
-class ServerInterface:
+class Interface:
     def onOpenConnection(self, connection):
         pass
         
