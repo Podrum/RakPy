@@ -20,16 +20,12 @@ class ServerSocket:
        
     def receiveBuffer(self):
         try:
-            data = self.socket.recvfrom(65535, 0)
-            print(f"IN -> {data}")
-            return data
-        except:
+            return self.socket.recvfrom(65535, 0)
+        except socket.error:
             pass
           
     def sendBuffer(self, buffer, address):
-        data = self.socket.sendto(buffer, address)
-        print(f"OUT -> {buffer}")
-        return data
+        return self.socket.sendto(buffer, address)
     
     def closeSocket(self):
         self.socket.close()
