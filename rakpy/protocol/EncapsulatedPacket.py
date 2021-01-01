@@ -1,6 +1,6 @@
-from binutilspy.BinaryStream import BinaryStream
 from rakpy.protocol.BitFlags import BitFlags
 from rakpy.protocol.Reliability import Reliability
+from rakpy.utils.BinaryStream import BinaryStream
 
 class EncapsulatedPacket:
     buffer = None
