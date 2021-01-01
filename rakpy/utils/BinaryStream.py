@@ -89,3 +89,15 @@ class BinaryStream:
     
     def putLFloat(self, value):
         self.put(struct.pack("<f", value))
+
+    def getDouble(self):
+        return struct.unpack(">d", self.get(8))[0]
+    
+    def putDouble(self, value):
+        self.put(struct.pack(">d", value))
+        
+    def getLDouble(self):
+        return struct.unpack("<d", self.get(8))[0]
+    
+    def putLDouble(self, value):
+        self.put(struct.pack("<d", value))
