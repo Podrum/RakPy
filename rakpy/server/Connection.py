@@ -81,14 +81,14 @@ class Connection:
                 pk.encode()
                 self.recoveryQueue[pk.sequenceNumber] = pk
                 del self.packetToSend[count]
-                self.sendPacket(pk)
+                #self.sendPacket(pk)
                 limit -= 1
                 if limit <= 0:
                     break
             if len(self.packetToSend) > 2048:
                 self.packetToSend = []
         for seq, pk in dict(self.recoveryQueue).items():
-            if pk.sendTime < (timeNow() - 8000):
+            if pk.sendTime < (timeNow() - 8):
                 self.packetToSend.append(pk)
                 del self.recoveryQueue[seq]
         for count, seq in enumerate(self.receivedWindow):
@@ -158,12 +158,7 @@ class Connection:
                 pk = self.recoveryQueue[seq]
                 pk.sequenceNumber = self.sequenceNumber
                 self.sequenceNumber += 1
-                pk.sendTime = timeNow()
-                pk.encode()
-                try:
-                    self.sendPacket(pk)
-                except Exception:
-                    pass
+                self.packetToSend.append(pk)
                 del self.recoveryQueue[seq]
                 
     def receivePacket(self, packet):
