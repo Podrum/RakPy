@@ -160,7 +160,10 @@ class Connection:
                 self.sequenceNumber += 1
                 pk.sendTime = timeNow()
                 pk.encode()
-                self.sendPacket(pk)
+                try:
+                    self.sendPacket(pk)
+                except Exception:
+                    pass
                 del self.recoveryQueue[seq]
                 
     def receivePacket(self, packet):
