@@ -24,10 +24,7 @@ class Socket:
             pass
           
     def sendBuffer(self, buffer, address):
-        try:
-            return self.socket.sendto(buffer, address)
-        except socket.error:
-            pass
+        return self.socket.sendto(buffer, address)
     
     def closeSocket(self):
         self.socket.close()
