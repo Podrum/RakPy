@@ -27,7 +27,7 @@ class Socket:
         try:
             return self.socket.sendto(buffer, address)
         except socket.error:
-            return b""
+            pass
     
     def closeSocket(self):
         self.socket.close()
