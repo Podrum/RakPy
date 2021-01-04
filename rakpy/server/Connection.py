@@ -1,5 +1,4 @@
 from rakpy.protocol.Ack import Ack
-from rakpy.protocol.BitFlags import BitFlags
 from rakpy.protocol.ConnectedPing import ConnectedPing
 from rakpy.protocol.ConnectedPong import ConnectedPong
 from rakpy.protocol.ConnectionRequest import ConnectionRequest
@@ -9,6 +8,7 @@ from rakpy.protocol.EncapsulatedPacket import EncapsulatedPacket
 from rakpy.protocol.Nack import Nack
 from rakpy.protocol.NewIncomingConnection import NewIncomingConnection
 from rakpy.protocol.PacketIdentifiers import PacketIdentifiers
+from rakpy.protocol.Reliability import Reliability
 from rakpy.utils.InternetAddress import InternetAddress
 from rakpy.utils.BinaryStream import BinaryStream
 from time import time as timeNow
@@ -36,14 +36,8 @@ class Connection:
     packetToSend = []
     sendQueue = DataPacket()
     splitPackets = {}
-    windowStart = -1
-    windowEnd = 2048
-    reliableWindowStart = 0
-    reliableWindowEnd = 2048
-    reliableWindow = {}
-    lastReliableIndex = -1
     receivedWindow = []
-    sequenceNumber = 0
+    lastReliableIndex = 0
     lastSequenceNumber = -1
     sendSequenceNumber = 0
     messageIndex = 0
@@ -60,7 +54,7 @@ class Connection:
         self.channelIndex = [0] * 32
             
     def update(self, timestamp):
-        if not self.isActive and (self.lastUpdate + 10000) < timestamp:
+        if not self.isActive and (self.lastUpdate + 10) < timestamp:
             self.disconnect("timeout")
             return
         self.isActive = False
@@ -81,7 +75,7 @@ class Connection:
                 pk.encode()
                 self.recoveryQueue[pk.sequenceNumber] = pk
                 del self.packetToSend[count]
-                #self.sendPacket(pk)
+                self.sendPacket(pk)
                 limit -= 1
                 if limit <= 0:
                     break
@@ -91,11 +85,6 @@ class Connection:
             if pk.sendTime < (timeNow() - 8):
                 self.packetToSend.append(pk)
                 del self.recoveryQueue[seq]
-        for count, seq in enumerate(self.receivedWindow):
-            if seq < self.windowStart:
-                del self.receivedWindow[count]
-            else:
-                break
         self.sendTheQueue()
         
     def disconnect(self, reason = "unknown"):
@@ -105,11 +94,11 @@ class Connection:
         self.isActive = True
         self.lastUpdate = timeNow()
         header = buffer[0]
-        if (header & BitFlags.Valid) == 0:
+        if (header & 0x80) == 0:
             return
-        if header & BitFlags.Ack:
+        if header & 0x40:
             return self.handleAck(buffer)
-        if header & BitFlags.Nack:
+        if header & 0x20:
             return self.handleNack(buffer)
         return self.handleDatagram(buffer)
         
@@ -117,17 +106,13 @@ class Connection:
         dataPacket = DataPacket()
         dataPacket.buffer = buffer
         dataPacket.decode()
-        if dataPacket.sequenceNumber < self.windowStart:
-            return
-        if dataPacket.sequenceNumber > self.windowEnd:
-            return
         if dataPacket.sequenceNumber in self.receivedWindow:
             return
-        diff = dataPacket.sequenceNumber - self.lastSequenceNumber
-        if dataPacket.sequenceNumber < len(self.nackQueue):
+        if dataPacket.sequenceNumber in self.nackQueue:
             self.nackQueue.remove(dataPacket.sequenceNumber)
         self.ackQueue.append(dataPacket.sequenceNumber)
         self.receivedWindow.append(dataPacket.sequenceNumber)
+        diff = dataPacket.sequenceNumber - self.lastSequenceNumber
         if diff != 1:
             i = self.lastSequenceNumber + 1
             while i < dataPacket.sequenceNumber:
@@ -136,8 +121,6 @@ class Connection:
                 i += 1
         if diff >= 1:
             self.lastSequenceNumber = dataPacket.sequenceNumber
-            self.windowStart += diff
-            self.windowEnd += diff
         for packet in dataPacket.packets:
             self.receivePacket(packet)
             
@@ -156,67 +139,52 @@ class Connection:
         for seq in packet.packets:
             if seq in self.recoveryQueue:
                 pk = self.recoveryQueue[seq]
-                pk.sequenceNumber = self.sequenceNumber
-                self.sequenceNumber += 1
-                self.packetToSend.append(pk)
+                pk.sequenceNumber = self.sendSequenceNumber
+                self.sendSequenceNumber += 1
+                pk.sendTime = timeNow()
+                pk.encode()
+                self.sendPacket(pk)
                 del self.recoveryQueue[seq]
                 
     def receivePacket(self, packet):
-        if packet.messageIndex is None:
+        if not Reliability.isReliable(packet.reliability):
             self.handlePacket(packet)
         else:
-            if packet.messageIndex < self.reliableWindowStart:
-                return
-            if packet.messageIndex > self.reliableWindowEnd:
-                return
-            if (packet.messageIndex - self.lastReliableIndex) == 1:
-                self.lastReliableIndex += 1
-                self.reliableWindowStart += 1
-                self.reliableWindowEnd += 1
+            holeCount = self.lastReliableIndex - packet.messageIndex
+            if holeCount == 0:
                 self.handlePacket(packet)
-                if len(self.reliableWindow) > 0:
-                    self.reliableWindow = dict(sorted(self.reliableWindow.items()))
-                    for seqIndex, pk in dict(self.reliableWindow).items():
-                        if (seqIndex - self.lastReliableIndex) != 1:
-                            break
-                        self.lastReliableIndex += 1
-                        self.reliableWindowStart += 1
-                        self.reliableWindowEnd += 1
-                        self.handlePacket(pk)
-                        del self.reliableWindow[seqIndex]
-            else:
-                self.reliableWindow[packet.messageIndex] = packet
+                self.lastReliableIndex += 1
                 
     def addEncapsulatedToQueue(self, packet, flags = priority["Normal"]):
-        if 2 <= packet.reliability <= 7 and packet.reliability != 5:
+        if Reliability.isReliable(packet.reliability):
             packet.messageIndex = self.messageIndex
             self.messageIndex += 1
-            if packet.reliability == 3:
+            if packet.reliability == Reliability.reliableOrdered:
                 packet.orderIndex = self.channelIndex[packet.orderChannel]
                 self.channelIndex[packet.orderChannel] += 1
-        if packet.getTotalLength() + 4 > self.mtuSize:
-            buffers = []
-            for i in range(0, len(packet.buffer), self.mtuSize - 34):
-                buffers.append(packet.buffer[i:i - (self.mtuSize - 34)])
-            self.splitId += 1
-            splitId = self.splitId % 65536
-            for count, buffer in enumerate(buffers):
+        if packet.getTotalLength() > self.mtuSize:
+            buffers = {}
+            i = 0
+            splitIndex = 0
+            while i < len(packet.buffer):
+                buffers[splitIndex] = packet.buffer[i:i + self.mtuSize]
+                splitIndex += 1
+                i += self.mtuSize
+            for index, buffer in buffers.items():
                 pk = EncapsulatedPacket()
-                pk.splitId = splitId
-                pk.split = True
+                pk.splitId = self.splitId
                 pk.splitCount = len(buffers)
                 pk.reliability = packet.reliability
-                pk.splitIndex = count
+                pk.splitIndex = index
                 pk.buffer = buffer
-                if count > 0:
+                if index != 0:
                     pk.messageIndex = self.messageIndex
                     self.messageIndex += 1
-                else:
-                    pk.messageIndex = packet.messageIndex
                 if pk.reliability == 3:
                     pk.orderChannel = packet.orderChannel
                     pk.orderIndex = packet.orderIndex
-                self.addToQueue(pk, flags | self.priority["Immediate"])
+                self.addToQueue(pk, flags)
+            self.splitId += 1
         else:
             self.addToQueue(packet, flags)
             
@@ -237,7 +205,7 @@ class Connection:
         self.sendQueue.packets.append(pk)
 
     def handlePacket(self, packet):
-        if packet.split:
+        if packet.splitCount > 0:
             self.handleSplit(packet)
             return
         pid = packet.buffer[0]

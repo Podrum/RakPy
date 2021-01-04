@@ -121,17 +121,18 @@ class Server(Thread):
         self.interface.onCloseConnection(connection.address, reason)
         
     def tick(self):
-        if not self.shutdown:
-            for token, connection in self.connections.items():
-                connection.update(timeNow())
-        else:
-            return
-        sleep(self.raknetTickLength)
+        while True:
+            if not self.shutdown:
+                for token, connection in self.connections.items():
+                    connection.update(timeNow())
+                sleep(self.raknetTickLength)
         
     def run(self):
+        tickProcessor = Thread(target = self.tick, args = ())
+        tickProcessor.setDaemon(True)
+        tickProcessor.start()
         while True:
             buffer = self.socket.receiveBuffer()
             if buffer is not None:
                 data, address = buffer
                 self.handle(data, InternetAddress(address[0], address[1]))
-            self.tick()

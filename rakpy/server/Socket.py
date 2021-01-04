@@ -14,8 +14,11 @@ class Socket:
         except socket.error as e:
             print(f"Unable to binto to {str(address.port)}")
             print(str(e))
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1024 * 1024 * 8)
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 1024 * 1024 * 8)
+        try:
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1024 * 1024 * 8)
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 1024 * 1024 * 8)
+        except socket.error:
+            pass
        
     def receiveBuffer(self):
         try:
@@ -24,7 +27,10 @@ class Socket:
             pass
           
     def sendBuffer(self, buffer, address):
-        return self.socket.sendto(buffer, address)
+        try:
+            return self.socket.sendto(buffer, address)
+        except socket.error:
+            pass
     
     def closeSocket(self):
         self.socket.close()
