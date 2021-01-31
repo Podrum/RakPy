@@ -20,7 +20,7 @@ class NewIncomingConnection(Packet):
     def decodePayload(self):
         self.address = self.getAddress()
         i = 0
-        while i < 20:
+        while i < 10:
             self.systemAddresses.append(self.getAddress())
             i += 1
         self.pingTime = self.getLong()
