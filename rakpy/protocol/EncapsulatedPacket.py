@@ -32,8 +32,7 @@ class EncapsulatedPacket:
             packet.splitCount = stream.getInt()
             packet.splitId = stream.getShort()
             packet.splitIndex = stream.getInt()
-        packet.buffer = stream.buffer[stream.offset:]
-        stream.offset += length
+        packet.buffer = stream.get(length)
         return packet
 
     def toBinary(self):
